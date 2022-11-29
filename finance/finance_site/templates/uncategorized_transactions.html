@@ -1,0 +1,29 @@
+{%  include 'header.html' %}
+<table style="text-align: left">
+    <tr>
+        <th>Date</th>
+        <th>Payment Method</th>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Memo</th>
+        <th>Price</th>
+        <th>Store</th>
+        <th>Receipts</th>
+        <th>Category</th>
+        <th>Note</th>
+    </tr>
+    {%  for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.get_date }}</td>
+            <td>{{ transaction.payment_method }}</td>
+            <td>{{ transaction.type }}</td>
+            <td>[{{ transaction.name }}]</td>
+            <td>[{{ transaction.memo }}]</td>
+            <td>{{ transaction.price }}</td>
+            <td>{{ transaction.store }}</td>
+            <td>{{ transaction.receipt }}</td>
+            <td>{{ transaction.category }}</td>
+            <td>{{ transaction.note }}</td>
+        </tr>
+    {%  endfor %}
+</table>

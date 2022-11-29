@@ -1,0 +1,20 @@
+{%  if current_page == "home" %}Home Page{%  else %}<a href="/">Home Page</a> {% endif %} |
+{%  if current_page == "uncategorized_transactions" %}Uncategorized Transactions{%  else %}<a href="/uncategorized">Uncategorized Transactions</a> {% endif %} |
+{%  if current_page == "unfinalized_legacy_transactions" %}Unfinalized Legacy Transaction{%  else %}<a href="/unfinalized">Unfinalized Legacy Transaction</a> {% endif %} |
+<a href="/legacy_import">Legacy Import</a>
+{#<a href="/transaction/add">Add Transaction</a>#}
+{#<form method="post" action="/csv/upload/credit_card" enctype="multipart/form-data">#}
+{#    {%  csrf_token %}#}
+{#    <input type="file" name="transactions" required>#}
+{#    <button type="submit">Upload Credit Card CSV</button>#}
+{#</form>#}
+{#<form method="post" action="/csv/upload/transaction_details" enctype="multipart/form-data">#}
+{#    {%  csrf_token %}#}
+{#    <input type="file" name="transaction_details" required>#}
+{#    <button type="submit">Upload Transaction Details</button>#}
+{#</form>#}
+{#<form method="post" action="/csv/upload/debit_card" enctype="multipart/form-data">#}
+{#    {%  csrf_token %}#}
+{#    <input type="file" name="transactions" required>#}
+{#    <button type="submit">Upload Debit Card CSV</button>#}
+{#</form>#}
