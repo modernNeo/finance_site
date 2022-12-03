@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.contrib import staticfiles
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -37,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'finance_site'
+    'finance_site',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +126,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
+
+MEDIA_URL = '/MEDIA_URL/'
+print(f'[settings.py] MEDIA_URL set to {MEDIA_URL}')

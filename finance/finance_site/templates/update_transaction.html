@@ -1,0 +1,139 @@
+{%  include 'header.html' %}
+{% load static %}
+<form method="post" action="" enctype="multipart/form-data">
+    <br><br>
+    {%  csrf_token %}
+    <button type="submit">Update Linked Transaction</button>
+    <br><br><b>Month: </b><input type="date" name="month" value="{{ transaction.get_front_end_month }}">
+    <br><br><b>Date: </b><input type="date" name="date" value="{{ transaction.get_front_end_date }}">
+    <br><br><b>Payment Method: </b>
+        <select name="payment_method">
+            {%  for payment_method_choice in payment_method_choices %}
+                {%  if payment_method_choice == transaction.payment_method %}
+                    <option selected value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
+                {%  else %}
+                    <option value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Purchase Target: </b>
+        <select name="purchase_target">
+            {%  for purchase_target_choice in purchase_target_choices %}
+                {%  if purchase_target_choice == transaction.purchase_target %}
+                    <option selected value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
+                {%  else %}
+                    <option value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Who Will Pay: </b>
+        <select name="who_will_pay">
+            {%  for who_will_pay_choice in who_will_pay_choices %}
+                {%  if who_will_pay_choice == transaction.who_will_pay %}
+                    <option selected value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
+                {%  else %}
+                    <option value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Name: </b>{{ transaction.name }}
+    <br><br><b>Memo: </b>{{ transaction.memo }}
+    <br><br><b>Price: </b>{{ transaction.formatted_price }}
+    <br><br><b>Store: </b><input type="text" name="store" value="{{ transaction.store }}">
+    <br><br><b>
+    Current Receipt: <a href="{%  get_media_prefix %}{{ transaction.receipt }}">{{ transaction.receipt }}</a><br>
+    New Receipt: <input type="file" name="receipt" value="{{ transaction.receipt }}" required>
+</b>
+    <br><br><b>Note: </b><input type="text" name="note" value="{{ transaction.note }}">
+    <br><br><b>Processed: </b><input type="checkbox" name="processed" {%  if transaction.processed %} checked {%  endif %}> {{ transaction.processed }}
+    <br><br><b>Category: </b>
+        <select name="categories">
+            {%  for category in categories %}
+                {%  if category.category == transaction.category.category %}
+                    <option selected value="{{ category.id }}">{{ category.category }}</option>
+                {%  else %}
+                    <option value="{{ category.id }}">{{ category.category }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Refund Status: </b>
+        {% if transactions_refunding_this_transaction|length == 0 and transactions_this_transaction_refunds|length == 0 %}
+            <p>NA</p>
+        {%  else %}
+            {% if transactions_refunding_this_transaction|length > 0 %}
+                <p>Transactions refunding this Transaction:</p>
+                {% for refunding_transaction in transactions_refunding_this_transaction %}
+                    <br><br>{{ refunding_transaction }}
+                {%  endfor %}
+            {%  endif %}
+            {% if transactions_this_transaction_refunds|length > 0 %}
+                <p>Transactions this Transaction is refunding:</p>
+                {% for transaction_this_transaction_refunds in transactions_this_transaction_refunds %}
+                    <br><br>{{ transaction_this_transaction_refunds }}
+                {%  endfor %}
+            {%  endif %}
+        {%  endif %}
+    <br><br><b>Relevant Internal Transfers/eTransfers: </b>
+        {% if corresponding_internal_transfers|length == 0 and corresponding_e_transfers|length == 0 %}
+            <p>NA</p>
+        {%  else %}
+            {%  if corresponding_internal_transfers|length > 0 %}
+                <p>Internal Transfers that Correspond to this Transaction:</p>
+                {% for corresponding_internal_transfer in corresponding_internal_transfers %}
+                    <br><br>{{ corresponding_internal_transfer }}
+                {%  endfor %}
+            {%  endif %}
+            {% if corresponding_e_transfers|length > 0 %}
+                <p>E-Transfers that Correspond to this Transaction:</p>
+                {% for corresponding_e_transfer in corresponding_e_transfers %}
+                    <br><br>{{ corresponding_e_transfer }}
+                {%  endfor %}
+            {%  endif %}
+        {%  endif %}
+    <br><br><b>Relevant Reimbursements: </b>
+        {% if transactions_reimbursing_this_transaction|length == 0 and transactions_this_transaction_reimburses|length == 0  %}
+            <p>NA</p>
+        {%  else %}
+            {% if transactions_reimbursing_this_transaction|length > 0 %}
+                <p>Transactions that reimburse this transaction:</p>
+                {% for transaction_reimbursing_this_transction in transactions_reimbursing_this_transaction %}
+                    <br><br>{{ transaction_reimbursing_this_transction }}
+                {%  endfor %}
+            {%  endif %}
+            {% if transactions_this_transaction_reimburses|length > 0 %}
+                <p>Transactions this transaction reimburses:</p>
+                {% for transaction_this_transaction_reimburses in transactions_this_transaction_reimburses %}
+                    <br><br>{{ transaction_this_transaction_reimburses }}
+                {%  endfor %}
+            {%  endif %}
+        {%  endif %}
+
+
+
+    <br><br><b>Transaction Label: </b>
+        {% if labels|length == 0 %}
+            <p>NA</p>
+        {%  else %}
+            {% for label in labels %}
+                <br><br>{{ label.label }}
+            {%  endfor %}
+        {%  endif %}
+    <br><br><b>Items: </b>
+        {% if items|length == 0 %}
+            <p>No items</p>
+        {%  else %}
+            <b>Items in this transaction:</b>
+            {% for item in items %}
+                <br><br>{{ item }}
+            {%  endfor %}
+        {%  endif %}
+    <br><br><b>Reimbursed Items: </b>
+        {% if reimbursed_items|length == 0 %}
+            <p>No items</p>
+        {%  else %}
+            <b>Items being reimbursed by this transaaction:</b>
+            {% for reimbursed_item in reimbursed_items %}
+                <br><br>{{ reimbursed_item }}
+            {%  endfor %}
+        {%  endif %}
+</form>

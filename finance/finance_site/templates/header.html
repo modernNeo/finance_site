@@ -1,7 +1,33 @@
-{%  if current_page == "home" %}Home Page{%  else %}<a href="/">Home Page</a> {% endif %} |
-{%  if current_page == "uncategorized_transactions" %}Uncategorized Transactions{%  else %}<a href="/uncategorized">Uncategorized Transactions</a> {% endif %} |
-{%  if current_page == "unfinalized_legacy_transactions" %}Unfinalized Legacy Transaction{%  else %}<a href="/unfinalized">Unfinalized Legacy Transaction</a> {% endif %} |
-<a href="/legacy_import">Legacy Import</a>
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+<body>
+<table>
+    <tr>
+        <th rowspan="2">{%  if current_page == "categorized" %}Categorized{%  else %}<a href="/">Categorized</a> {% endif %}</th>
+        <th rowspan="2">{%  if current_page == "data_is_beautiful" %}Categorized{%  else %}<a href="/r/data_is_beautiful">r/DataIsBeautiful</a> {% endif %}</th>
+        <th colspan="2">All Categorized Transactions</th>
+        <th rowspan="2">{%  if current_page == "mappings" %}Mappings{%  else %}<a href="/mappings">Mappings</a> {% endif %}</th>
+        <th rowspan="2">{%  if current_page == "not_reimbursed" %}Awaiting Repayments{%  else %}<a href="/awaiting_payment">Awaiting Repayments</a> {% endif %}</th>
+        <th colspan="2">Uncategorized</th>
+        <th colspan="2">Un-Transferred</th>
+        <th rowspan="2"><a href="/legacy_import">Legacy Import</a></th>
+    </tr>
+    <tr>
+        <th>{%  if current_page == "master_card" %}MasterCard{%  else %}<a href="/master_card">MasterCard</a> {% endif %} </th>
+        <th>{%  if current_page == "debit_card" %}Debit Card{%  else %}<a href="/debit_card">Debit Card</a> {% endif %}</th>
+        <th>{%  if current_page == "uncategorized_mastercard" %}MasterCard{%  else %}<a href="/uncategorized/master_card">MasterCard</a> {% endif %}</th>
+        <th>{%  if current_page == "uncategorized_debitcard" %}Debit Card{%  else %}<a href="/uncategorized/debit_card">Debit Card</a> {% endif %}</th>
+        <th>{%  if current_page == "un_transferred_legacy_mastercard" %}MasterCard{%  else %}<a href="/un_transferred_legacy/master_card">MasterCard</a> {% endif %}</th>
+        <th>{%  if current_page == "un_transferred_legacy_debitcard" %}Debit Card{%  else %}<a href="/un_transferred_legacy/debit_card">Debit Card</a> {% endif %}</th>
+    </tr>
+</table>
 {#<a href="/transaction/add">Add Transaction</a>#}
 {#<form method="post" action="/csv/upload/credit_card" enctype="multipart/form-data">#}
 {#    {%  csrf_token %}#}

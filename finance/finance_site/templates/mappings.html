@@ -1,0 +1,269 @@
+{%  include 'header.html' %}
+
+<h1>Transactions Refunded</h1>
+<a target="_blank" href="/mapping/refund/transaction/new">New Transaction Refund Mapping</a>
+{%  if transaction_refund_mappings|length > 0 %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Original Transaction</th>
+            <th>Refunding Transaction</th>
+        </tr>
+        {%  for transaction_refund_mapping in transaction_refund_mappings %}
+            <tr>
+                <td><a target="_blank" href="{{ transaction_refund_mapping.get_update_link }}">{{ transaction_refund_mapping.id }}</a> </td>
+                <td>
+                    <p>
+                        ID: {{ transaction_refund_mapping.original_transaction.id }}<br>
+                        Date: {{ transaction_refund_mapping.original_transaction.get_front_end_date }}<br>
+                        Name:{{ transaction_refund_mapping.original_transaction.name }}<br>
+                        Price: {{ transaction_refund_mapping.original_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ transaction_refund_mapping.original_transaction.get_update_link }}">Edit</a>
+                </td>
+                <td>
+                    <p>
+                        ID: {{ transaction_refund_mapping.refund_transaction.id }}<br>
+                        Date: {{ transaction_refund_mapping.refund_transaction.get_front_end_date }}<br>
+                        Name: {{ transaction_refund_mapping.refund_transaction.name }}<br>
+                        Price: {{ transaction_refund_mapping.refund_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ transaction_refund_mapping.refund_transaction.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+            </tr>
+        {%  endfor %}
+    </table>
+{%  endif %}
+
+<h1>Transactions Reimbursed</h1>
+<a target="_blank" href="/mapping/reimbursement/transaction/new">New Transaction Reimbursement Mapping</a>
+{%  if transaction_reimbursement_mappings|length > 0 %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Original Transaction</th>
+            <th>Reimbursement Transaction</th>
+        </tr>
+        {%  for transaction_reimbursement_mapping in transaction_reimbursement_mappings %}
+            <tr>
+                <td><a target="_blank" href="{{ transaction_reimbursement_mapping.get_update_link }}">{{ transaction_reimbursement_mapping.id }}</a></td>
+                <td>
+                    <p>
+                        ID: {{ transaction_reimbursement_mapping.original_transaction_in_reimbursement.id }}<br>
+                        Date: {{ transaction_reimbursement_mapping.original_transaction_in_reimbursement.get_front_end_date }}<br>
+                        Name: {{ transaction_reimbursement_mapping.original_transaction_in_reimbursement.name }}<br>
+                        Price: {{ transaction_reimbursement_mapping.original_transaction_in_reimbursement.formatted_price }}<br>
+                        <a target="_blank" href="{{ transaction_reimbursement_mapping.original_transaction_in_reimbursement.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        ID: {{ transaction_reimbursement_mapping.reimbursement_transaction.id }}<br>
+                        Date: {{ transaction_reimbursement_mapping.reimbursement_transaction.get_front_end_date }}<br>
+                        Name: {{ transaction_reimbursement_mapping.reimbursement_transaction.name }}<br>
+                        Price: {{ transaction_reimbursement_mapping.reimbursement_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ transaction_reimbursement_mapping.reimbursement_transaction.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+            </tr>
+         {%  endfor %}
+    </table>
+{%  endif %}
+
+<h1>Transactions Repaid</h1>
+<a target="_blank" href="/mapping/repaid/transaction/new">New Repaid Transaction Mapping</a>
+{% if transaction_paid_back_mappings|length > 0 %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Original Transaction</th>
+            <th>Transaction Paying Back Original Transaction</th>
+            <th>Note</th>
+        </tr>
+        {%  for transaction_paid_back_mapping in transaction_paid_back_mappings %}
+            <tr>
+                <td><a target="_blank" href="{{ transaction_paid_back_mapping.get_update_link }}">{{ transaction_paid_back_mapping.id }}</a></td>
+                <td>
+                    <p>
+                        ID: {{ transaction_paid_back_mapping.original_transaction.transaction.id }}<br>
+                        Date: {{ transaction_paid_back_mapping.original_transaction.transaction.get_front_end_date }}<br>
+                        Name: {{ transaction_paid_back_mapping.original_transaction.name }}<br>
+                        Price: {{ transaction_paid_back_mapping.original_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ transaction_paid_back_mapping.original_transaction.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        ID: {{ transaction_paid_back_mapping.payback_transaction.id }}<br>
+                        Date: {{ transaction_paid_back_mapping.payback_transaction.get_front_end_date }}<br>
+                        Name: {{ transaction_paid_back_mapping.payback_transaction.name }}<br>
+                        Price: {{ transaction_paid_back_mapping.payback_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ transaction_paid_back_mapping.payback_transaction.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>{{ transaction_paid_back_mapping.note }}</td>
+            </tr>
+         {%  endfor %}
+    </table>
+{%  endif %}
+
+
+
+
+
+<h1>Items Refunded</h1>
+<a target="_blank" href="/mapping/refund/item/new">New Item Refunded Mapping</a>
+{% if item_refund_mappings|length > 0 %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Original Item</th>
+            <th>Transaction Refunding Original Item</th>
+            <th>Note</th>
+        </tr>
+        {%  for item_refund_mapping in item_refund_mappings %}
+            <tr>
+                <td><a target="_blank" href="{{ item_refund_mapping.get_update_link }}">{{ item_refund_mapping.id }}</a></td>
+                <td>
+                    <p>
+                        ID: {{ item_refund_mapping.original_item.transaction.id }}<br>
+                        Date: {{ item_refund_mapping.original_item.transaction.get_front_end_date }}<br>
+                        Name: {{ item_refund_mapping.original_item.name }}<br>
+                        Price: {{ item_refund_mapping.original_item.formatted_price }}<br>
+                        <a target="_blank" href="{{ item_refund_mapping.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        ID: {{ item_refund_mapping.refund_transaction.id }}<br>
+                        Date: {{ item_refund_mapping.refund_transaction.get_front_end_date }}<br>
+                        Name: {{ item_refund_mapping.refund_transaction.name }}<br>
+                        Price: {{ item_refund_mapping.refund_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ item_refund_mapping.refund_transaction.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>{{ item_refund_mapping.note }}</td>
+            </tr>
+         {%  endfor %}
+    </table>
+{%  endif %}
+
+<h1>Item Reimbursements</h1>
+<a target="_blank" href="/mapping/reimbursement/item/new">New Item Reimbursement Mapping</a>
+{% if item_reimbursement_mappings|length > 0 %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Original Item</th>
+            <th>Reimbursement Transaction</th>
+            <th>Note</th>
+        </tr>
+        {%  for item_reimbursement_mapping in item_reimbursement_mappings %}
+            <tr>
+                <td><a target="_blank" href="{{ item_reimbursement_mapping.get_update_link }}">{{ item_reimbursement_mapping.id }}</a></td>
+                <td>
+                    <p>
+                        ID: {{ item_reimbursement_mapping.original_transaction.transaction.id }}<br>
+                        Date: {{ item_reimbursement_mapping.original_transaction.transaction.get_front_end_date }}<br>
+                        Name: {{ item_reimbursement_mapping.original_transaction.name }}<br>
+                        Price: {{ item_reimbursement_mapping.original_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ item_reimbursement_mapping.original_transaction.get_update_link.id }}">Edit</a>
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        ID: {{ item_reimbursement_mapping.reimbursement_transaction.id }}<br>
+                        Date: {{ item_reimbursement_mapping.reimbursement_transaction.get_front_end_date }}<br>
+                        Name: {{ item_reimbursement_mapping.reimbursement_transaction.name }}<br>
+                        Price: {{ item_reimbursement_mapping.reimbursement_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ item_reimbursement_mapping.reimbursement_transaction.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>{{ item_reimbursement_mapping.note }}</td>
+            </tr>
+         {%  endfor %}
+    </table>
+{%  endif %}
+
+<h1>Items Repaid</h1>
+<a target="_blank" href="/mapping/repaid/item/new">New Item Repaid Mapping</a>
+{%  if item_paid_back_mappings|length > 0 %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Original Item</th>
+            <th>Transaction Refunding Item</th>
+            <th>Note</th>
+        </tr>
+        {%  for item_paid_back_mapping in item_paid_back_mappings %}
+            <tr>
+                <td><a target="_blank" href="{{ item_paid_back_mapping.get_update_link }}">{{ item_paid_back_mapping.id }}</a></td>
+                <td>
+                    <p>
+                        ID: {{ item_paid_back_mapping.original_item.id }}<br>
+                        Date: {{ item_paid_back_mapping.original_item.transaction.get_front_end_date }}<br>
+                        Name: {{ item_paid_back_mapping.original_item.name }}<br>
+                        Price: {{ item_paid_back_mapping.original_item.formatted_price }}<br>
+                        <a target="_blank" href="{{ item_paid_back_mapping.original_item.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        ID: {{ item_paid_back_mapping.payback_transaction.id }}<br>
+                        Date: {{ item_paid_back_mapping.payback_transaction.get_front_end_date }}<br>
+                        Name: {{ item_paid_back_mapping.payback_transaction.name }}<br>
+                        Price: {{ item_paid_back_mapping.payback_transaction.formatted_price }}<br>
+                        <a target="_blank" href="{{ item_paid_back_mapping.payback_transaction.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>{{ item_paid_back_mapping.note }}</td>
+            </tr>
+         {%  endfor %}
+    </table>
+{%  endif %}
+
+
+
+
+<h1>E-transfer/Internal Transfer Mappings</h1>
+<a target="_blank" href="/mapping/e_transfer_internal_transfer_mapping/new">New Item Repaid Mapping</a>
+{%  if e_transfer_to_internal_transfer_mappings|length > 0 %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>E-Transfer</th>
+            <th>Internal Transfer</th>
+        </tr>
+        {%  for e_transfer_to_internal_transfer_mapping in e_transfer_to_internal_transfer_mappings %}
+            <tr>
+                <td><a target="_blank" href="{{ e_transfer_to_internal_transfer_mapping.get_update_link }}">{{ e_transfer_to_internal_transfer_mapping.id }}</a></td>
+                <td>
+                    <p>
+                        ID: {{ e_transfer_to_internal_transfer_mapping.e_transfer.id }}<br>
+                        Date: {{ e_transfer_to_internal_transfer_mapping.e_transfer.get_front_end_date }}<br>
+                        Name: {{ e_transfer_to_internal_transfer_mapping.e_transfer.name }}<br>
+                        Price: {{ e_transfer_to_internal_transfer_mapping.e_transfer.formatted_price }}<br>
+                        <a target="_blank" href="{{ e_transfer_to_internal_transfer_mapping.e_transfer.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        ID: {{ e_transfer_to_internal_transfer_mapping.internal_transfer.id }}<br>
+                        Date: {{ e_transfer_to_internal_transfer_mapping.internal_transfer.get_front_end_date }}<br>
+                        Name: {{ e_transfer_to_internal_transfer_mapping.internal_transfer.name }}<br>
+                        Price: {{ e_transfer_to_internal_transfer_mapping.internal_transfer.formatted_price }}<br>
+                        <a target="_blank" href="{{ e_transfer_to_internal_transfer_mapping.internal_transfer.get_update_link }}">Edit</a>
+                    </p>
+                </td>
+            </tr>
+        {%  endfor %}
+    </table>
+{%  endif %}
+
+
+
+
+
+
+
+
+

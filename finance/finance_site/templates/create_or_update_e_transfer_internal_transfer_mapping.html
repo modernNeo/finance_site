@@ -1,0 +1,30 @@
+{%  include 'header.html' %}
+
+<h1>Create/Update a eTransfer/Internal Transfer Mapping</h1>
+<form method="post" action="">
+    <button type="submit">Save/Update Mapping</button>
+    {%  csrf_token %}
+    <br><br><b>eTransfer: </b>
+    <select name="e_transfer">
+        <option value="None">None</option>
+        {%  for charge in charges %}
+            {%  if e_transfer_to_internal_transfer_mapping.e_transfer.id == charge.id %}
+                <option selected value="{{ charge.id }}">{{ charge.get_date }} | {{ charge.payment_method }} | {{ charge.purchase_target }} | {{ charge.who_will_pay }} | {{ charge.type }} | {{ charge.name }} | {{ charge.formatted_price }} | {{ charge.note }}</option>
+            {%  else %}
+                <option value="{{ charge.id }}">{{ charge.get_date }} | {{ charge.payment_method }} | {{ charge.purchase_target }} | {{ charge.who_will_pay }} | {{ charge.type }} | {{ charge.name }} | {{ charge.formatted_price }} | {{ charge.note }}</option>
+            {%  endif %}
+        {% endfor %}
+    </select>
+
+    <br><br><b>Internal Transfer: </b>
+    <select name="internal_transfer">
+        <option value="None">None</option>
+        {%  for refund in refunds %}
+            {%  if e_transfer_to_internal_transfer_mapping.internal_transfer.id == refund.id %}
+                <option selected value="{{ refund.id }}">{{ refund.get_date }} | {{ refund.payment_method }} | {{ refund.purchase_target }} | {{ refund.who_will_pay }} | {{ refund.type }} | {{ refund.name }} | {{ refund.formatted_price }} | {{ refund.note }}</option>
+            {%  else %}
+                <option value="{{ refund.id }}">{{ refund.get_date }} | {{ refund.payment_method }} | {{ refund.purchase_target }} | {{ refund.who_will_pay }} | {{ refund.type }} | {{ refund.name }} | {{ refund.formatted_price }} | {{ refund.note }}</option>
+            {%  endif %}
+        {% endfor %}
+    </select>
+</form>

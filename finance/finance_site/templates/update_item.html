@@ -1,0 +1,98 @@
+{%  include 'header.html' %}
+<form method="post" action="" enctype="multipart/form-data">
+    <br><br>
+    {%  csrf_token %}
+    <button type="submit">Update Linked Item</button>
+    <br><br><b>Month: </b><input type="date" name="month" value="{{ item.transaction.get_front_end_month }}">
+    <br><br><b>Date: </b><input type="date" name="date" value="{{ item.transaction.get_front_end_date }}">
+    <br><br><b>Payment Method: </b>
+        <select name="payment_method">
+            {%  for payment_method_choice in payment_method_choices %}
+                {%  if payment_method_choice == item.payment_method %}
+                    <option selected value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
+                {%  else %}
+                    <option value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Purchase Target: </b>
+        <select name="purchase_target_choice">
+            {%  for purchase_target_choice in purchase_target_choices %}
+                {%  if purchase_target_choice == item.purchase_target %}
+                    <option selected value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
+                {%  else %}
+                    <option value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Who Will Pay: </b>
+        <select name="who_will_pay_choice">
+            {%  for who_will_pay_choice in who_will_pay_choices %}
+                {%  if who_will_pay_choice == item.who_will_pay %}
+                    <option selected value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
+                {%  else %}
+                    <option value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Name: </b>{{ item.name }}
+    <br><br><b>Price: </b>{{ item.formatted_price }}
+    <br><br><b>Store: </b> <input type="text" name="store" value="{{ item.store }}">
+    <br><br><b>Receipt: <input type="file" name="receipt" required></b>
+    <br><br><b>Note: </b><input type="text" name="note" value="{{ item.note }}">
+    <br><br><b>Processed: </b><input type="checkbox" name="processed" {%  if item.processed %} checked {%  endif %}> {{ item.processed }}
+    <br><br><b>Category: </b>
+        <select name="categories">
+            {%  for category in categories %}
+                {%  if category.category == item.category.category %}
+                    <option selected value="{{ category.id }}">{{ category.category }}</option>
+                {%  else %}
+                    <option value="{{ category.id }}">{{ category.category }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Refund Status: </b>
+        {% if transactions_refunding_item|length == 0 %}
+            <p>NA</p>
+        {%  else %}
+            <p>Transactions refunding this Item:</p>
+            {% for transaction_refunding_item in transactions_refunding_item %}
+                <br><br>{{ transaction_refunding_item }}
+            {%  endfor %}
+        {%  endif %}
+    <br><br><b>Relevant Reimbursements: </b>
+        {% if transactions_reimbursing_item|length == 0 %}
+            <p>NA</p>
+        {%  else %}
+            <p>Transactions that reimburse this item:</p>
+            {% for transaction_reimbursing_item in transactions_reimbursing_item %}
+                <br><br>{{ transaction_reimbursing_item }}
+            {%  endfor %}
+        {%  endif %}
+    <br><br><b>Relevant Paybacks: </b>
+        {% if transactions_paying_back_item|length == 0 %}
+            <p>NA</p>
+        {%  else %}
+            <p>Transactions that reimburse this item:</p>
+            {% for transaction_paying_back_item in transactions_paying_back_item %}
+                <br><br>{{ transaction_paying_back_item }}
+            {%  endfor %}
+        {%  endif %}
+    <br><br><b>Item Label: </b>
+        {% if labels|length == 0 %}
+            <p>No labels</p>
+        {%  else %}
+            {% for label in labels %}
+                <br><br>{{ label }}
+            {%  endfor %}
+        {%  endif %}
+    <br><br><b>Items: </b>
+        {% if items|length == 0 %}
+            <p>No items</p>
+        {%  else %}
+            <b>Items in this item:</b>
+            {% for item in items %}
+                <br><br>{{ item }}
+            {%  endfor %}
+        {%  endif %}
+</form>
