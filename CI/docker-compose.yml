@@ -1,0 +1,43 @@
+version: '3.8' #docker-compose version
+services:  #Services that are needed for the finance_site app
+    finance_site_app: #the finance_site app, the name will of the image will be ${COMPOSE_PROJECT_NAME}_finance_site
+        build:
+            context: ../ #Saying that all of my source files are at the root path
+            dockerfile: CI/Dockerfile
+        environment:
+            - POSTGRES_DB
+            - POSTGRES_USER
+            - POSTGRES_PASSWORD
+            - COMPOSE_PROJECT_NAME
+        ports:
+            - 8000:8000
+        volumes: #volume are for hot reload
+            - logs:/usr/src/app/logs
+            - receipt_images:/usr/src/app/receipt_images
+        depends_on:   # used to ensure that docker wont start finance_site until after it has started the database container
+            - "db"
+        container_name: "${COMPOSE_PROJECT_NAME}_app"
+        restart: unless-stopped
+        networks:
+            - finance_site_network
+        stdin_open: true # docker run -i
+        tty: true        # docker run -t
+    db: #declaration of the postgres container
+        environment:
+            - POSTGRES_DB
+            - POSTGRES_USER
+            - POSTGRES_PASSWORD
+        image: postgres:alpine #using postgres image
+        container_name: "${COMPOSE_PROJECT_NAME}_db"
+        networks:
+            - finance_site_network
+volumes:
+    logs:
+        name: "${COMPOSE_PROJECT_NAME}_logs"
+    receipt_images:
+        name: "${COMPOSE_PROJECT_NAME}_receipt_images"
+
+networks:
+    finance_site_network:
+        name: finance_site_network
+        driver: bridge

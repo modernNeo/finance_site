@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+    }
+    stages {
+        stage('Deploy') {
+            when {
+                branch 'master'
+            }
+            steps {
+                withCredentials(
+                [string(credentialsId: 'POSTGRES_PASSWORD', variable: 'POSTGRES_PASSWORD'),
+                string(credentialsId: 'FINANCE_SITE_DB_PASSWORD', variable: 'FINANCE_SITE_DB_PASSWORD')]
+                ){
+                    sh label: '', script: """bash -c \'
+                        export POSTGRES_DB="'"${POSTGRES_DB}"'";
+                        export POSTGRES_USER="'"${POSTGRES_USER}"'";
+                        export POSTGRES_PASSWORD="'"${POSTGRES_PASSWORD}"'";
+                        ./CI/deploy.sh;
+                    \'"""
+                }
+            }
+        }
+    }
+    post {
+      always {
+          script {
+              if (fileExists('test_results/all-unit-tests.xml')){
+                  junit skipPublishingChecks: true, testResults: 'test_results/all-unit-tests.xml'
+              }
+          }
+      }
+  }
+}
