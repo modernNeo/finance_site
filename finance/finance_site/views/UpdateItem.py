@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 
@@ -26,3 +27,9 @@ class UpdateItem(View):
             "labels": labels,
 
         })
+
+    def post(self, request, item_id):
+        item = Item.objects.get(id=item_id)
+        item.note = request.POST['note']
+        item.save()
+        return HttpResponseRedirect(item.get_update_link)

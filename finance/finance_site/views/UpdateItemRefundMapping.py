@@ -13,7 +13,7 @@ class UpdateItemRefundMapping(View):
     def get(self, request, mapping_id):
         item_refund_mapping = ItemRefund.objects.get(id=mapping_id)
         charges = Item.objects.all().filter(transaction__payment_method__in=["MasterCard", "Debit Card"], price__lt=0)
-        refunds = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0)
+        refunds = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0).order_by('-date')
         return render(
             request, 'create_or_update_item_refund_mapping.html', context=
             {
@@ -30,4 +30,4 @@ class UpdateItemRefundMapping(View):
         item_refund_mapping.refund_transaction = Transaction.objects.get(id=post_dict['refund_transaction'])
         item_refund_mapping.original_item = Item.objects.get(id=post_dict['original_item'])
         item_refund_mapping.save()
-        return HttpResponseRedirect(f"/mapping/refund/item/update/{item_refund_mapping.id}")
+        return HttpResponseRedirect(item_refund_mapping.get_update_link)

@@ -18,6 +18,7 @@
                         Date: {{ transaction_refund_mapping.original_transaction.get_front_end_date }}<br>
                         Name:{{ transaction_refund_mapping.original_transaction.name }}<br>
                         Price: {{ transaction_refund_mapping.original_transaction.formatted_price }}<br>
+                        Note: {{ transaction_refund_mapping.original_transaction.note }}<br>
                         <a target="_blank" href="{{ transaction_refund_mapping.original_transaction.get_update_link }}">Edit</a>
                 </td>
                 <td>
@@ -26,6 +27,7 @@
                         Date: {{ transaction_refund_mapping.refund_transaction.get_front_end_date }}<br>
                         Name: {{ transaction_refund_mapping.refund_transaction.name }}<br>
                         Price: {{ transaction_refund_mapping.refund_transaction.formatted_price }}<br>
+                        Note: {{ transaction_refund_mapping.refund_transaction.note }}<br>
                         <a target="_blank" href="{{ transaction_refund_mapping.refund_transaction.get_update_link }}">Edit</a>
                     </p>
                 </td>
@@ -203,6 +205,7 @@
                         Date: {{ item_paid_back_mapping.original_item.transaction.get_front_end_date }}<br>
                         Name: {{ item_paid_back_mapping.original_item.name }}<br>
                         Price: {{ item_paid_back_mapping.original_item.formatted_price }}<br>
+                        Note: {{ item_paid_back_mapping.original_item.note }}<br>
                         <a target="_blank" href="{{ item_paid_back_mapping.original_item.get_update_link }}">Edit</a>
                     </p>
                 </td>
@@ -212,6 +215,7 @@
                         Date: {{ item_paid_back_mapping.payback_transaction.get_front_end_date }}<br>
                         Name: {{ item_paid_back_mapping.payback_transaction.name }}<br>
                         Price: {{ item_paid_back_mapping.payback_transaction.formatted_price }}<br>
+                        Note: {{ item_paid_back_mapping.payback_transaction.note }}<br>
                         <a target="_blank" href="{{ item_paid_back_mapping.payback_transaction.get_update_link }}">Edit</a>
                     </p>
                 </td>

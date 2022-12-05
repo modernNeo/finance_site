@@ -1,0 +1,54 @@
+{%  include 'header.html' %}
+<form method="post" action="" enctype="multipart/form-data">
+    {%  csrf_token %}
+    <button type="submit" name="action" value="create_or_update_pending_transaction">Create/Update Pending Transaction</button>
+    <button type="submit" name="action" value="delete_pending_transaction">Delete Pending Transaction</button>
+    <br><br><b>Month: </b><input type="date" name="month" value="{{ pending_transaction.get_month }}">
+    <br><br><b>Date: </b><input type="date" name="date" value="{{ pending_transaction.get_front_end_date }}">
+    <br><br><b>Payment Method: </b>
+        <select name="payment_method">
+            {%  for payment_method_choice in payment_method_choices %}
+                {%  if payment_method_choice == pending_transaction.payment_method %}
+                    <option selected value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
+                {%  else %}
+                    <option value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Purchase Target: </b>
+        <select name="purchase_target">
+            {%  for purchase_target_choice in purchase_target_choices %}
+                {%  if purchase_target_choice == pending_transaction.purchase_target %}
+                    <option selected value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
+                {%  else %}
+                    <option value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Who Will Pay: </b>
+        <select name="who_will_pay">
+            {%  for who_will_pay_choice in who_will_pay_choices %}
+                {%  if who_will_pay_choice == pending_transaction.who_will_pay %}
+                    <option selected value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
+                {%  else %}
+                    <option value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Price: </b><input type="double" name="price" step="any" value="{{ pending_transaction.price }}">
+    <br><br><b>Store: </b><input type="text" name="store" value="{{ pending_transaction.store }}">
+    <br><br><b>Note: </b><input type="text" name="note" value="{{ pending_transaction.note }}">
+    <br><br><b>Category: </b>
+        <select name="category">
+            {%  for category in categories %}
+                {%  if category.category == pending_transaction.category.category %}
+                    <option selected value="{{ category.id }}">{{ category.category }}</option>
+                {%  else %}
+                    <option value="{{ category.id }}">{{ category.category }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>
+    New Receipt: <input type="file" name="receipt">
+</b>
+</form>

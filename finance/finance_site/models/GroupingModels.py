@@ -5,6 +5,11 @@ from finance_site.models.TransactionModels import Transaction
 
 
 # for when a transaction like from cineplex gets refunded
+from finance_site.urls import update_transaction_refunding_mapping, update_transaction_reimbursement_mapping, \
+    update_transaction_repaid_mapping, update_item_refund_mapping, update_item_reimbursement_mapping, \
+    update_item_repaid_mapping, update_e_transfer_internal_transfer_mapping
+
+
 class TransactionRefund(models.Model):
     original_transaction = models.ForeignKey(
         Transaction, on_delete=models.CASCADE,
@@ -17,7 +22,7 @@ class TransactionRefund(models.Model):
 
     @property
     def get_update_link(self):
-        return f"/mapping/refund/transaction/update/{self.id}"
+        return f"/{update_transaction_refunding_mapping}{self.id}"
 
 
 # for I get reimbursed for like health care from Vena or something
@@ -36,7 +41,7 @@ class TransactionReimbursement(models.Model):
 
     @property
     def get_update_link(self):
-        return f"/mapping/reimbursement/transaction/update/{self.id}"
+        return f"/{update_transaction_reimbursement_mapping}{self.id}"
 
 
 # for when Mircea or Dawn pay me back for a whole transaction
@@ -55,7 +60,7 @@ class TransactionPayBack(models.Model):
 
     @property
     def get_update_link(self):
-        return f"/mapping/repaid/transaction/update/{self.id}"
+        return f"/{update_transaction_repaid_mapping}{self.id}"
 
 
 # for when an item like from donalds gets refunded
@@ -71,7 +76,7 @@ class ItemRefund(models.Model):
 
     @property
     def get_update_link(self):
-        return f"/mapping/refund/item/update/{self.id}"
+        return f"/{update_item_refund_mapping}{self.id}"
 
 
 # if a particular items gets reimbursed by someone like Vena [team lunch]
@@ -91,7 +96,7 @@ class ItemReimbursement(models.Model):
 
     @property
     def get_update_link(self):
-        return f"/mapping/reimbursement/item/update/{self.id}"
+        return f"/{update_item_reimbursement_mapping}{self.id}"
 
 
 # for when Mircea or Dawn pay me back for a particular item in a transaction
@@ -110,7 +115,7 @@ class ItemPayBack(models.Model):
 
     @property
     def get_update_link(self):
-        return f"/mapping/repaid/item/update/{self.id}"
+        return f"/{update_item_repaid_mapping}{self.id}"
 
 
 class ETransferToInternalTransferMapping(models.Model):
@@ -125,7 +130,7 @@ class ETransferToInternalTransferMapping(models.Model):
 
     @property
     def get_update_link(self):
-        return f"/mapping/e_transfer_internal_transfer_mapping/update/{self.id}"
+        return f"/{update_e_transfer_internal_transfer_mapping}{self.id}"
 
 
 class ItemLabelIntersection(models.Model):

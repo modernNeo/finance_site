@@ -1,0 +1,60 @@
+{%  include 'header.html' %}
+{% if pending_transactions|length > 0 %}
+<form method="post" action="" enctype="multipart/form-data">
+    <br><br>
+    {%  csrf_token %}
+    <button type="submit">Crate or Update Pending Item</button>
+    <br><br><b>Pending Transaction: </b>
+        <select name="pending_transaction">
+            {%  for pending_transaction in pending_transactions %}
+                {%  if pending_transaction.id == pending_item.pending_transaction.id %}
+                    <option selected value="{{ pending_transaction.id }}">{{ pending_transaction }}</option>
+                {%  else %}
+                    <option value="{{ pending_transaction.id }}">{{ pending_transaction }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Purchase Target: </b>
+        <select name="purchase_target">
+            {%  for purchase_target_choice in purchase_target_choices %}
+                {%  if purchase_target_choice == pending_item.purchase_target %}
+                    <option selected value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
+                {%  else %}
+                    <option value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Who Will Pay: </b>
+        <select name="who_will_pay">
+            {%  for who_will_pay_choice in who_will_pay_choices %}
+                {%  if who_will_pay_choice == pending_item.who_will_pay %}
+                    <option selected value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
+                {%  else %}
+                    <option value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Price: </b><input type="text" name="price" value="{{ pending_item.formatted_price }}">
+    <br><br><b>Note: </b><input type="text" name="note" value="{{ pending_item.note }}">
+    <br><br><b>Category: </b>
+        <select name="category">
+            {%  for category in categories %}
+                {%  if category.category == pending_item.category.category %}
+                    <option selected value="{{ category.id }}">{{ category.category }}</option>
+                {%  else %}
+                    <option value="{{ category.id }}">{{ category.category }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <br><br><b>Item Label: </b>
+        {% if labels|length == 0 %}
+            <p>No labels</p>
+        {%  else %}
+            {% for label in labels %}
+                <br><br>{{ label }}
+            {%  endfor %}
+        {%  endif %}
+</form>
+{%  else %}
+    <p>Looks like there is no pending transaction with a price <0 to link a pending item to</p>
+{% endif %}

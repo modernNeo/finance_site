@@ -13,7 +13,7 @@ class UpdateItemReimbursementMapping(View):
     def get(self, request, mapping_id):
         item_reimbursement_mapping = ItemReimbursement.objects.get(id=mapping_id)
         charges = Item.objects.all().filter(transaction__payment_method__in=["MasterCard", "Debit Card"], price__lt=0)
-        refunds = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0)
+        refunds = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0).order_by('-date')
         return render(
             request, 'create_or_update_item_reimbursement_mapping.html', context=
             {
@@ -31,4 +31,4 @@ class UpdateItemReimbursementMapping(View):
             id=post_dict['reimbursement_transaction'])
         item_reimbursement_mapping.original_item = Item.objects.get(id=post_dict['original_item'])
         item_reimbursement_mapping.save()
-        return HttpResponseRedirect(f"/mapping/reimbursement/item/update/{item_reimbursement_mapping.id}")
+        return HttpResponseRedirect(item_reimbursement_mapping.get_update_link)

@@ -1,0 +1,258 @@
+{%  include 'header.html' %}
+<div class="tabs" id="tabs">
+    <ul>
+        {%  for month in months %}
+            {%  if month == current_month %}
+                <li data-tab="{{month}}" class="is-active"><a>{{month}}</a></li>
+            {%  else %}
+                <li data-tab="{{month}}"><a>{{month}}</a></li>
+            {%  endif %}
+        {%  endfor %}
+    </ul>
+</div>
+
+<div id="tab-content">
+    {%  for category_month, monthly_mastercard_transactions in mastercard_expenses.items %}
+        {% if category_month == current_month %}<div data-content="{{category_month}}">{% else %}<div class="is-hidden" data-content="{{category_month}}">{% endif %}
+        <h3>{{ category_month }}</h3>
+        {%  for category, category_details in monthly_mastercard_transactions.items %}
+            <h1>Category: {{ category }}</h1>
+            <h2>Price: {{ category_details.total_price }}</h2>
+            {%  if category_details.transactions|length > 0 %}
+            <h3>Transactions</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Who Will Pay</th>
+                    <th>Purchase Target</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Reimbursement</th>
+                    <th>PayBack</th>
+                    <th>Refund</th>
+                </tr>
+            {%  for transaction_obj in category_details.transactions %}
+                <tr>
+                    {%  if transaction_obj.type == "regular_transaction" %}
+                        <td>{{ transaction_obj.transaction.id }}</td>
+                        <td>{{ transaction_obj.transaction.get_date }}</td>
+                        <td>{{ transaction_obj.transaction.who_will_pay }}</td>
+                        <td>{{ transaction_obj.transaction.purchase_target }}</td>
+                        <td>{{ transaction_obj.transaction.name }}</td>
+                        <td>{{ transaction_obj.transaction.price }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    {%  elif transaction_obj.type == 'reimbursed_transaction' %}
+                        <td>{{ transaction_obj.transaction.id }}</td>
+                        <td>{{ transaction_obj.transaction.get_date }}</td>
+                        <td>{{ transaction_obj.transaction.who_will_pay }}</td>
+                        <td>{{ transaction_obj.transaction.purchase_target }}</td>
+                        <td>{{ transaction_obj.transaction.name }}</td>
+                        <td>{{ transaction_obj.transaction.price }}</td>
+                        <td>
+                         Reimbursed Transactions<br>
+                        {%  for reimbursement in transaction_obj.transaction.reimbursements %}
+                            <a target="_blank" href="{{ reimbursement.get_update_link }}">{{ reimbursement.id }}</a>,
+                        {%  endfor %}
+                        </td>
+                        <td></td>
+                        <td></td>
+                    {%  elif transaction_obj.type == 'awaiting_reimbursement' %}
+                        <td>{{ transaction_obj.transaction.id }}</td>
+                        <td>{{ transaction_obj.transaction.get_date }}</td>
+                        <td>{{ transaction_obj.transaction.who_will_pay }}</td>
+                        <td>{{ transaction_obj.transaction.purchase_target }}</td>
+                        <td>{{ transaction_obj.transaction.name }}</td>
+                        <td>{{ transaction_obj.transaction.price }}</td>
+                        <td>Awaiting Reimbursement</td>
+                        <td></td>
+                        <td></td>
+
+                    {%  elif transaction_obj.type == 'paid_back_transaction' %}
+                        <td>{{ transaction_obj.transaction.id }}</td>
+                        <td>{{ transaction_obj.transaction.get_date }}</td>
+                        <td>{{ transaction_obj.transaction.who_will_pay }}</td>
+                        <td>{{ transaction_obj.transaction.purchase_target }}</td>
+                        <td>{{ transaction_obj.transaction.name }}</td>
+                        <td>{{ transaction_obj.transaction.price }}</td>
+                        <td></td>
+                        <td>
+                         Paid back transactions<br>
+                        {%  for payback in transaction_obj.transaction.paybacks %}
+                            <a target="_blank" href="{{ payback.get_update_link }}">{{ payback.id }}</a>,
+                        {%  endfor %}
+                        </td>
+                        <td></td>
+                    {%  elif transaction_obj.type == 'awaiting_payback' %}
+                        <td>{{ transaction_obj.transaction.id }}</td>
+                        <td>{{ transaction_obj.transaction.get_date }}</td>
+                        <td>{{ transaction_obj.transaction.who_will_pay }}</td>
+                        <td>{{ transaction_obj.transaction.purchase_target }}</td>
+                        <td>{{ transaction_obj.transaction.name }}</td>
+                        <td>{{ transaction_obj.transaction.price }}</td>
+                        <td></td>
+                        <td>Transaction Awaiting Payback</td>
+                        <td></td>
+                    {%  elif transaction_obj.type == 'refunded_transaction' %}
+                        <td>{{ transaction_obj.transaction.id }}</td>
+                        <td>{{ transaction_obj.transaction.get_date }}</td>
+                        <td>{{ transaction_obj.transaction.who_will_pay }}</td>
+                        <td>{{ transaction_obj.transaction.purchase_target }}</td>
+                        <td>{{ transaction_obj.transaction.name }}</td>
+                        <td>{{ transaction_obj.transaction.price }}</td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                         Refunded transactions<br>
+                        {%  for refund in transaction_obj.transaction.refunds %}
+                            <a target="_blank" href="{{ refund.get_update_link }}">{{ refund.id }}</a>,
+                        {%  endfor %}
+                        </td>
+                    {%  elif transaction_obj.type == 'awaiting_refund' %}
+                        <td>{{ transaction_obj.transaction.id }}</td>
+                        <td>{{ transaction_obj.transaction.get_date }}</td>
+                        <td>{{ transaction_obj.transaction.who_will_pay }}</td>
+                        <td>{{ transaction_obj.transaction.purchase_target }}</td>
+                        <td>{{ transaction_obj.transaction.name }}</td>
+                        <td>{{ transaction_obj.transaction.price }}</td>
+                        <td></td>
+                        <td></td>
+                        <td>Transaction Awaiting Refund</td>
+                    {%  endif %}
+                </tr>
+            {%  endfor %}
+            </table>
+            {%  endif %}
+            {%  if category_details.items|length > 0 %}
+            <h3>Items</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Who Will Pay</th>
+                    <th>Purchase Target</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Reimbursement</th>
+                    <th>PayBack</th>
+                    <th>Refund</th>
+                </tr>
+            {%  for item_obj in category_details.items %}
+                <tr>
+                {%  if item_obj.type == "regular_item" %}
+                    <td>{{ item_obj.item.id }}</td>
+                    <td>{{ item_obj.item.get_date }}</td>
+                    <td>{{ item_obj.item.who_will_pay }}</td>
+                    <td>{{ item_obj.item.purchase_target }}</td>
+                    <td>{{ item_obj.item.name }}</td>
+                    <td>{{ item_obj.item.price }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                {%  elif item_obj.type == 'reimbursed_item' %}
+                    <td>{{ item_obj.item.id }}</td>
+                    <td>{{ item_obj.item.get_date }}</td>
+                    <td>{{ item_obj.item.who_will_pay }}</td>
+                    <td>{{ item_obj.item.purchase_target }}</td>
+                    <td>{{ item_obj.item.name }}</td>
+                    <td>{{ item_obj.item.price }}</td>
+                    <td>
+                     Reimbursement Transaction<br>
+                    {%  for reimbursement in item_obj.reimbursements %}
+                        <a target="_blank" href="{{ reimbursement.get_update_link }}">{{ reimbursement.id }}</a>,
+                    {%  endfor %}
+                    </td>
+                    <td></td>
+                    <td></td>
+                {%  elif item_obj.type == 'waiting_reimbursement' %}
+                    <td>{{ item_obj.item.id }}</td>
+                    <td>{{ item_obj.item.get_date }}</td>
+                    <td>{{ item_obj.item.who_will_pay }}</td>
+                    <td>{{ item_obj.item.purchase_target }}</td>
+                    <td>{{ item_obj.item.name }}</td>
+                    <td>{{ item_obj.item.price }}</td>
+                    <td>Awaiting Reimbursement</td>
+                    <td></td>
+                    <td></td>
+
+                {%  elif item_obj.type == 'repaid_item' %}
+                    <td>{{ item_obj.item.id }}</td>
+                    <td>{{ item_obj.item.get_date }}</td>
+                    <td>{{ item_obj.item.who_will_pay }}</td>
+                    <td>{{ item_obj.item.purchase_target }}</td>
+                    <td>{{ item_obj.item.name }}</td>
+                    <td>{{ item_obj.item.price }}</td>
+                    <td></td>
+                    <td>
+                        Payback transaction for item:<br>
+                        {%  for payback in item_obj.pay_backs %}
+                            <a target="_blank" href="{{ payback.get_update_link }}">{{ payback.id }}</a>,
+                        {%  endfor %}
+                    </td>
+                    <td></td>
+                {%  elif item_obj.type == 'waiting_repayment' %}
+                    <td>{{ item_obj.item.id }}</td>
+                    <td>{{ item_obj.item.get_date }}</td>
+                    <td>{{ item_obj.item.who_will_pay }}</td>
+                    <td>{{ item_obj.item.purchase_target }}</td>
+                    <td>{{ item_obj.item.name }}</td>
+                    <td>{{ item_obj.item.price }}</td>
+                    <td></td>
+                    <td>
+                     Awaiting Payback
+                    </td>
+                    <td></td>
+                {%  elif item_obj.type == 'refunded_item' %}
+                    <td>{{ item_obj.item.id }}</td>
+                    <td>{{ item_obj.item.get_date }}</td>
+                    <td>{{ item_obj.item.who_will_pay }}</td>
+                    <td>{{ item_obj.item.purchase_target }}</td>
+                    <td>{{ item_obj.item.name }}</td>
+                    <td>{{ item_obj.item.price }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                     Refunded Item<br>
+                    {%  for refund in item_obj.refunds %}
+                        <a target="_blank" href="{{ refund.get_update_link }}">{{ refund.id }}</a>,
+                    {%  endfor %}
+                    </td>
+                {%  elif item_obj.type == 'waiting_refund' %}
+                    <td>{{ item_obj.item.id }}</td>
+                    <td>{{ item_obj.item.get_date }}</td>
+                    <td>{{ item_obj.item.who_will_pay }}</td>
+                    <td>{{ item_obj.item.purchase_target }}</td>
+                    <td>{{ item_obj.item.name }}</td>
+                    <td>{{ item_obj.item.price }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>Awaiting Refund</td>
+                {%  endif %}
+                </tr>
+            {%  endfor %}
+            </table>
+            {%  endif %}
+
+        {%  endfor %}
+    </div>
+    {%  endfor %}
+</div>
+<script>
+//changes date tab
+$(document).ready(function() {
+    $('#tabs li').on('click', function() {
+        var tab = $(this).data('tab');
+
+        $('#tabs li').removeClass('is-active');
+        $(this).addClass('is-active');
+
+        console.log(tab);
+
+        $('#tab-content div[data-content]').addClass('is-hidden');
+        $('div[data-content="' + tab + '"]').removeClass('is-hidden');
+    });
+});
+</script>
+</body>

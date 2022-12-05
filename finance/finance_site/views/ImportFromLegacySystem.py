@@ -5,6 +5,7 @@ import pytz
 from django.http import HttpResponseRedirect
 from django.views.generic.base import View
 
+from finance.settings import BASE_DIR
 from finance_site.models.GroupingModels import ItemLabelIntersection, ItemReimbursement, TransactionRefund, \
     ETransferToInternalTransferMapping, TransactionReimbursement, ItemPayBack
 from finance_site.models.ItemModels import ItemLabel, Item
@@ -74,7 +75,7 @@ class ImportFromLegacySystem(View):
         TransactionBase.objects.all().delete()
 
         TransactionLabel.objects.all().delete()
-        with open("/media/jace/jace_docs/2_personal/finance/chequing.CSV", 'r') as credit_card:
+        with open(f"{BASE_DIR.parent}/chequing.CSV", 'r') as credit_card:
             csvFile = csv.reader(credit_card)
             for line in csvFile:
                 date = None
@@ -94,7 +95,7 @@ class ImportFromLegacySystem(View):
                         memo=line[3],
                         price=line[4]
                     ).save()
-        with open("/media/jace/jace_docs/2_personal/finance/credit_card.csv", 'r') as credit_card:
+        with open(f"{BASE_DIR.parent}/credit_card.csv", 'r') as credit_card:
             csvFile = csv.reader(credit_card)
             for line in csvFile:
                 date = None
@@ -114,7 +115,7 @@ class ImportFromLegacySystem(View):
                         memo=line[3],
                         price=line[4]
                     ).save()
-        with open("/media/jace/jace_docs/2_personal/finance/transaction_details.csv", 'r') as transaction_details:
+        with open(f"{BASE_DIR.parent}/transaction_details.csv", 'r') as transaction_details:
             csvFile = csv.reader(transaction_details)
             i = 0
             csvFile = list(reversed([line for line in csvFile]))
@@ -170,20 +171,8 @@ class ImportFromLegacySystem(View):
                                         original_transaction=original_transaction,
                                         refund_transaction=matching_uncategorized_bank_csv_transaction
                                     ).save()
-                                    item_name = f"{name} | {category_str}"
                                     if original_transaction.category is None:
                                         raise Exception("something no good....")
-                                    for original_item in original_transaction.item_set.all():
-                                        Item(
-                                            name=item_name,
-                                            price=original_item.price - (2 * original_item.price),
-                                            purchase_target=original_item.purchase_target,
-                                            waiting_for_reimbursement=original_item.waiting_for_reimbursement,
-                                            who_will_pay=original_item.who_will_pay,
-                                            category=original_item.category,
-                                            transaction=matching_uncategorized_bank_csv_transaction,
-                                            note=note
-                                        ).save()
                                     matching_uncategorized_bank_csv_transaction.category = original_transaction.category
                                     matching_uncategorized_bank_csv_transaction.note = note
                                     matching_uncategorized_bank_csv_transaction.month = month

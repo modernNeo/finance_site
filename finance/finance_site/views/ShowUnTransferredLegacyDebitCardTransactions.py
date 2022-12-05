@@ -19,7 +19,7 @@ class ShowUnTransferredLegacyDebitCardTransactions(View):
             current_page = 1
         else:
             current_page = int(current_page)
-        unlinked_bank_csv_transactions = Transaction.objects.all().filter(category__isnull=True)
+        unlinked_bank_csv_transactions = Transaction.objects.all().filter(category__isnull=True).order_by('-date')
         paginated_object = Paginator(
             LegacyTransaction.objects.all()
             .filter(payment_method="Debit Card",date__gte=datetime.datetime.strptime("2021-12-01", "%Y-%m-%d"))

@@ -12,7 +12,7 @@ class NewItemRepaidMapping(View):
 
     def get(self, request):
         charges = Item.objects.all().filter(transaction__payment_method__in=["MasterCard", "Debit Card"], price__lt=0)
-        refunds = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0)
+        refunds = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0).order_by('-date')
         return render(
             request, 'create_or_update_item_paid_back_mapping.html', context=
             {
@@ -28,4 +28,4 @@ class NewItemRepaidMapping(View):
         item_repaid_mapping.payback_transaction = Transaction.objects.get(id=post_dict['payback_transaction'])
         item_repaid_mapping.original_item = Item.objects.get(id=post_dict['original_item'])
         item_repaid_mapping.save()
-        return HttpResponseRedirect(f"/mapping/repaid/item/update/{item_repaid_mapping.id}")
+        return HttpResponseRedirect(item_repaid_mapping.get_update_link)

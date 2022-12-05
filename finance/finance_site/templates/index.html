@@ -10,16 +10,44 @@
         {%  endfor %}
     </ul>
 </div>
+
 <div id="tab-content">
     {%  for month, transactions in categorized_transactions.items %}
         {% if month == current_month %}<div data-content="{{month}}">{% else %}<div class="is-hidden" data-content="{{month}}">{% endif %}
-        {%  for category_month, category_total in category_totals.items %}
+        <h3>MasterCard Expenses</h3>
+        <ul>
+            {%  for mastercard_month, categories in mastercard_expenses_per_month.items %}
+                {%  if mastercard_month == month %}
+                    {%  for category, price in categories.items %}
+                        {%  if category == "Not Regular Purchases" %}
+                            {%  for custom_category, category_details in price.items %}
+                                ++ {{ custom_category }}: Total Charge: {{ category_details.total_charge }}<br>
+                                {%  for item in category_details.transactions %}
+                                    <li> ++++ <a target="_blank" href="{{ item.link }}">{{ item.date }}: {{ item.type }} | {{ item.category }} | {{ item.who_will_pay }} : {{ item.price }}</a><br></li>
+                                {%  endfor %}
+                            {%  endfor %}
+                            <ul>
+                            </ul>
+                        {%  else %}
+                            <li>{{ category }} : {{ price }}</li>
+                        {%  endif %}
+                    {%  endfor %}
+                {%  endif %}
+            {%  endfor %}
+        </ul>
+        <table>
+        {%  for category_month, pages in category_totals.items %}
             {%  if category_month == month %}
-                {%  for category, amount in category_total.items %}
-                    <p>{{ category }}: {{ amount }}</p>
+                {%  for page in pages %}
+                    <tr>
+                        {%  for category, price in page.items %}
+                            <td>{{ category }}: {{ price }}</td>
+                        {%  endfor %}
+                    </tr>
                 {%  endfor %}
             {%  endif %}
         {%  endfor %}
+        </table>
         <table style="text-align: left">
             <tr>
                 <th>ID</th>

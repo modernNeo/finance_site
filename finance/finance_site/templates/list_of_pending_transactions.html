@@ -1,0 +1,37 @@
+{%  include 'header.html' %}
+<table style="text-align: left">
+    <tr>
+        <th>ID</th>
+        <th>Month</th>
+        <th>Date</th>
+        <th>Payment Method</th>
+        <th>Who Will Pay</th>
+        <th>Purchase Target</th>
+        <th>Method of Transaction</th>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Memo</th>
+        <th>Price</th>
+        <th>Store</th>
+        <th>Receipts</th>
+        <th>Category</th>
+    </tr>
+    {%  for pending_transaction in pending_transactions %}
+        <tr>
+            <td><a target="_blank" href="{{ pending_transaction.get_update_link }}">{{pending_transaction.id }}</a></td>
+            <td>{{ pending_transaction.get_month }}</td>
+            <td>{{ pending_transaction.get_date }}</td>
+            <td>{{ pending_transaction.payment_method }}</td>
+            <td>{{ pending_transaction.who_will_pay }}</td>
+            <td>{{ pending_transaction.purchase_target }}</td>
+            <td>{{ pending_transaction.method_of_transaction }}</td>
+            <td>{{ pending_transaction.type }}</td>
+            <td>{{ pending_transaction.name }}</td>
+            <td>{{ pending_transaction.memo }}</td>
+            <td>{{ pending_transaction.formatted_price }}</td>
+            <td>{{ pending_transaction.store }}</td>
+            <td>{{ pending_transaction.receipt }}</td>
+            <td>{{ pending_transaction.category }}</td>
+        </tr>
+    {%  endfor %}
+</table>

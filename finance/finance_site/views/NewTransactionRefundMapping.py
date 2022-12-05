@@ -10,8 +10,8 @@ from finance_site.models.TransactionModels import Transaction
 class NewTransactionRefundMapping(View):
 
     def get(self, request):
-        charges = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__lt=0)
-        refunds = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0)
+        charges = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__lt=0).order_by('-date')
+        refunds = Transaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0).order_by('-date')
         return render(
             request, 'create_or_update_transaction_refund_mapping.html', context=
             {
@@ -27,4 +27,4 @@ class NewTransactionRefundMapping(View):
         transaction_refund_mapping.refund_transaction = Transaction.objects.get(id=post_dict['refund_transaction'])
         transaction_refund_mapping.original_transaction = Transaction.objects.get(id=post_dict['original_transaction'])
         transaction_refund_mapping.save()
-        return HttpResponseRedirect(f"/mapping/refund/transaction/update/{transaction_refund_mapping.id}")
+        return HttpResponseRedirect(transaction_refund_mapping.get_update_link)

@@ -38,7 +38,7 @@
     <br><br><b>Name: </b>{{ item.name }}
     <br><br><b>Price: </b>{{ item.formatted_price }}
     <br><br><b>Store: </b> <input type="text" name="store" value="{{ item.store }}">
-    <br><br><b>Receipt: <input type="file" name="receipt" required></b>
+    <br><br><b>Receipt: <input type="file" name="receipt"></b>
     <br><br><b>Note: </b><input type="text" name="note" value="{{ item.note }}">
     <br><br><b>Processed: </b><input type="checkbox" name="processed" {%  if item.processed %} checked {%  endif %}> {{ item.processed }}
     <br><br><b>Category: </b>

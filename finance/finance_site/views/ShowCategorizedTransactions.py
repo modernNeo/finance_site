@@ -35,68 +35,50 @@ class ShowCategorizedTransactions(View):
             "Automated Student Loans Payment",
             "Student Loans"
         ]
+
         for transaction in transactions:
             if transaction.category is not None:
                 if transaction.get_month not in categorized_transactions:
                     categorized_transactions[transaction.get_month] = []
                 categorized_transactions[transaction.get_month].append(transaction)
-                da_item = transaction
-                if da_item.category.category in categories_i_care_about:
-                    if da_item.get_month not in category_totals:
-                        category_totals[da_item.get_month] = {}
-                    if da_item.category.category not in category_totals[da_item.get_month]:
-                        category_totals[da_item.get_month][da_item.category.category] = 0
-                    category_totals[da_item.get_month][da_item.category.category] += da_item.price
+                if transaction.category.category in categories_i_care_about:
+                    increase_price(category_totals, transaction.get_month, transaction.category.category, transaction.price)
                 if transaction.category.category == "Partial" or transaction.category.category == "Categorized Elsewhere":
                     for item in transaction.item_set.all():
                         if transaction.get_month not in categorized_transactions:
                             categorized_transactions[transaction.get_month] = []
                         categorized_transactions[transaction.get_month].append(item)
-                        da_item = item
-                        if da_item.category.category in categories_i_care_about:
-                            if da_item.get_month not in category_totals:
-                                category_totals[da_item.get_month] = {}
-                            if da_item.category.category not in category_totals[da_item.get_month]:
-                                category_totals[da_item.get_month][da_item.category.category] = 0
-                            category_totals[da_item.get_month][da_item.category.category] += da_item.price
+                        if item.category.category in categories_i_care_about:
+                            increase_price(category_totals, item.get_month, item.category.category, item.price)
                         for reimbursement_receipt in item.get_item_reimbursement_transactions_set.all():
                             if transaction.get_month not in categorized_transactions:
                                 categorized_transactions[transaction.get_month] = []
                             categorized_transactions[transaction.get_month].append(
                                 reimbursement_receipt.reimbursement_transaction)
-                            da_item = reimbursement_receipt.reimbursement_transaction
-                            if da_item.category.category in categories_i_care_about:
-                                if da_item.get_month not in category_totals:
-                                    category_totals[da_item.get_month] = {}
-                                if da_item.category.category not in category_totals[da_item.get_month]:
-                                    category_totals[da_item.get_month][da_item.category.category] = 0
-                                category_totals[da_item.get_month][da_item.category.category] += da_item.price
+                            reimbursement_transaction = reimbursement_receipt.reimbursement_transaction
+                            if reimbursement_transaction.category.category in categories_i_care_about:
+                                increase_price(
+                                    category_totals,
+                                    reimbursement_transaction.get_month,
+                                    reimbursement_transaction.category.category,
+                                    reimbursement_transaction.price
+                                )
             refunds_receipt = transaction.get_transactions_refunding_this_transaction()
             for refund_receipt in refunds_receipt:
                 refund_receipt.pre_pend = "--REFUND BY--"
                 if transaction.get_month not in categorized_transactions:
                     categorized_transactions[transaction.get_month] = []
                 categorized_transactions[transaction.get_month].append(refund_receipt)
-                da_item = refund_receipt
-                if da_item.category.category in categories_i_care_about:
-                    if da_item.get_month not in category_totals:
-                        category_totals[da_item.get_month] = {}
-                    if da_item.category.category not in category_totals[da_item.get_month]:
-                        category_totals[da_item.get_month][da_item.category.category] = 0
-                    category_totals[da_item.get_month][da_item.category.category] += da_item.price
+                if refund_receipt.category.category in categories_i_care_about:
+                    increase_price(category_totals, refund_receipt.get_month, refund_receipt.category.category, refund_receipt.price)
             original_receipts = transaction.get_transactions_this_transaction_is_refunding()
             for original_receipt in original_receipts:
                 original_receipt.pre_pend = "--REFUNDS--"
                 if transaction.get_month not in categorized_transactions:
                     categorized_transactions[transaction.get_month] = []
                 categorized_transactions[transaction.get_month].append(original_receipt)
-                da_item = original_receipt
-                if da_item.category.category in categories_i_care_about:
-                    if da_item.get_month not in category_totals:
-                        category_totals[da_item.get_month] = {}
-                    if da_item.category.category not in category_totals[da_item.get_month]:
-                        category_totals[da_item.get_month][da_item.category.category] = 0
-                    category_totals[da_item.get_month][da_item.category.category] += da_item.price
+                if original_receipt.category.category in categories_i_care_about:
+                    increase_price(category_totals, original_receipt.get_month, original_receipt.category.category, original_receipt.price)
 
             corresponding_internal_transfers = transaction.get_corresponding_internal_transfer_set.all()
             for corresponding_internal_transfer in corresponding_internal_transfers:
@@ -105,13 +87,12 @@ class ShowCategorizedTransactions(View):
                     categorized_transactions[transaction.get_month] = []
                 categorized_transactions[transaction.get_month].append(
                     corresponding_internal_transfer.internal_transfer)
-                da_item = corresponding_internal_transfer.internal_transfer
-                if da_item.category.category in categories_i_care_about:
-                    if da_item.get_month not in category_totals:
-                        category_totals[da_item.get_month] = {}
-                    if da_item.category.category not in category_totals[da_item.get_month]:
-                        category_totals[da_item.get_month][da_item.category.category] = 0
-                    category_totals[da_item.get_month][da_item.category.category] += da_item.price
+                internal_transfer = corresponding_internal_transfer.internal_transfer
+                if internal_transfer.category.category in categories_i_care_about:
+                    increase_price(
+                        category_totals, internal_transfer.get_month, internal_transfer.category.category,
+                        internal_transfer.price
+                    )
 
             corresponding_etransfers = transaction.get_corresponding_e_transfer_set.all()
             for corresponding_etransfer in corresponding_etransfers:
@@ -119,17 +100,16 @@ class ShowCategorizedTransactions(View):
                 if transaction.get_month not in categorized_transactions:
                     categorized_transactions[transaction.get_month] = []
                 categorized_transactions[transaction.get_month].append(corresponding_etransfer.e_transfer)
-                da_item = corresponding_etransfer.e_transfer
-                if da_item.category.category in categories_i_care_about:
-                    if da_item.get_month not in category_totals:
-                        category_totals[da_item.get_month] = {}
-                    if da_item.category.category not in category_totals[da_item.get_month]:
-                        category_totals[da_item.get_month][da_item.category.category] = 0
-                    category_totals[da_item.get_month][da_item.category.category] += da_item.price
+                e_transfer = corresponding_etransfer.e_transfer
+                if e_transfer.category.category in categories_i_care_about:
+                    increase_price(
+                        category_totals, e_transfer.get_month, e_transfer.category.category, e_transfer.price
+                    )
 
         for month, value in category_totals.items():
-            for category, price in value.items():
-                category_totals[month][category] = "$%.2f" % price
+            for row in value:
+                for category, price in row.items():
+                    row[category] = "$%.2f" % price
 
         return render(
             request, 'index.html', context=
@@ -138,6 +118,30 @@ class ShowCategorizedTransactions(View):
                 "category_totals": category_totals,
                 "current_page": "categorized",
                 "months": months,
-                "current_month": "2022-11"
+                "current_month": "2022-11",
             }
         )
+
+
+def add_month(category_dict, month_str):
+    if month_str not in category_dict:
+        category_dict[month_str] = [{}]
+
+
+def add_category(category_dict, month_str, category_str):
+    add_month(category_dict, month_str)
+
+    current_row = len(category_dict[month_str]) - 1
+    categories_on_current_page = len(category_dict[month_str][current_row])
+
+    if categories_on_current_page == 4:
+        category_dict[month_str].append({})
+        current_row = len(category_dict[month_str]) - 1
+    if category_str not in category_dict[month_str][current_row]:
+        category_dict[month_str][current_row][category_str] = 0
+
+
+def increase_price(category_dict, month_str, category_str, price):
+    add_category(category_dict, month_str, category_str)
+    current_index = len(category_dict[month_str]) - 1
+    category_dict[month_str][current_index][category_str] += price

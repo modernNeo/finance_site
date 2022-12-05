@@ -44,9 +44,11 @@ class UpdateTransaction(View):
 
     def post(self, request, transaction_id):
         transaction = Transaction.objects.get(id=transaction_id)
-        receipt = request.FILES['receipt']
-        fs = FileSystemStorage()
-        file_name = fs.save(receipt.name, receipt)
+        receipt = request.FILES.get("receipt", None)
+        file_name = None
+        if receipt is not None:
+            fs = FileSystemStorage()
+            file_name = fs.save(receipt.name, receipt)
         transaction.month = request.POST['month']
         transaction.date = request.POST['date']
         transaction.payment_method = request.POST['payment_method']
@@ -54,9 +56,10 @@ class UpdateTransaction(View):
         transaction.who_will_pay = request.POST['who_will_pay']
         transaction.store = request.POST['store']
         transaction.note = request.POST['note']
-        if (file_name != transaction.receipt):
-            fs.delete(transaction.receipt.name)
-        transaction.receipt = file_name
+        if file_name is not None:
+            if (file_name != transaction.receipt):
+                fs.delete(transaction.receipt.name)
+            transaction.receipt = file_name
         transaction.categories = Transaction.objects.get(id=request.POST['categories'])
         transaction.save()
-        return HttpResponseRedirect("")
+        return HttpResponseRedirect(transaction.get_update_link)

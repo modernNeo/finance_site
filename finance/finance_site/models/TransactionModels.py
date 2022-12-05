@@ -1,5 +1,10 @@
+import datetime
+
+import pytz
 from django.db import models
 
+from finance_site.url_paths import update_pending_transaction
+from finance_site.urls import update_bank_transaction
 
 
 class TransactionCategory(models.Model):
@@ -66,7 +71,7 @@ class TransactionBase(models.Model):
         ('Micheal', 'Micheal'),  # if the responsibility for the purchase is ultimately Micheal
         ('Dawn', 'Dawn'),  # if the responsibility for the purchase is ultimately Dawn
         ("Group Purchase", "Group Purchase")
-    # if its an transaction purchase and multiple people have to pay for each item
+        # if its an transaction purchase and multiple people have to pay for each item
     )
 
     who_will_pay = models.CharField(
@@ -127,10 +132,6 @@ class TransactionBase(models.Model):
         default=False
     )
 
-    @property
-    def get_update_link(self):
-        return f"/update/transaction/{self.id}"
-
     def save(self, *args, **kwargs):
         if self.payment_method.lower() == "Mastercard".lower():
             self.payment_method = "MasterCard"
@@ -141,14 +142,27 @@ class TransactionBase(models.Model):
             self.payment_method = "Paid by Dawn"
         else:
             raise Exception(f"Unknown payment method of {self.payment_method} detected")
+        vancouver_timezone = pytz.timezone('America/Vancouver')
+        month_as_datetime_obj = datetime.datetime.strptime(f'{self.month.strftime("%Y-%m")}-01', "%Y-%m-%d").astimezone(
+            vancouver_timezone) \
+            if type(self.month) == datetime.datetime \
+            else datetime.datetime.strptime(self.month, "%Y-%m-%d").astimezone(vancouver_timezone)
+        self.month = datetime.datetime.strptime(
+            f'{month_as_datetime_obj.strftime("%Y-%m")}-01', "%Y-%m-%d"
+        ).astimezone(vancouver_timezone)
 
         super(TransactionBase, self).save(*args, **kwargs)
-
 
 class Transaction(TransactionBase):
     category = models.ForeignKey(
         TransactionCategory, on_delete=models.CASCADE, null=True
     )
+
+    def transaction_is_a_charge(self):
+        refunded_receipt = self.get_transactions_this_transaction_is_refunding()
+        reimbursements = self.get_transactions_that_are_reimbursing_this_transaction()
+        paid_back_transaction = self.get_transactions_that_this_transaction_is_payback_for()
+        return len(refunded_receipt) == 0 and len(reimbursements) == 0 and len(paid_back_transaction) == 0
 
     def get_transactions_refunding_this_transaction(self):
         return [
@@ -191,6 +205,20 @@ class Transaction(TransactionBase):
             if reimbursement_mapping.reimbursement_transaction.id == self.id
         ]
 
+    def get_transactions_that_are_paying_back_this_transaction(self):
+        return [
+            payback_mapping.payback_transaction
+            for payback_mapping in self.get_transaction_paying_back_this_transaction_set.all()
+            if payback_mapping.original_transaction.id == self.id
+        ]
+
+    def get_transactions_that_this_transaction_is_payback_for(self):
+        return [
+            payback_mapping.original_transaction
+            for payback_mapping in self.get_transaction_paying_back_this_transaction_set.all()
+            if payback_mapping.payback_transaction.id == self.id
+        ]
+
     @staticmethod
     def get_uncategorized_with_memo(date, method_of_transaction, name, memo, price):
         matching_uncategorized_bank_csv_transactions_draft = Transaction.objects.filter(
@@ -209,6 +237,10 @@ class Transaction(TransactionBase):
                         matching_uncategorized_bank_csv_transactions.append(matching_uncategorized_bank_csv_transaction)
         return matching_uncategorized_bank_csv_transactions
 
+    @property
+    def get_update_link(self):
+        return f"/{update_bank_transaction}{self.id}"
+
     def __str__(self):
         return f"Transaction [{self.id}] date [{self.get_date}] payment method [{self.payment_method}] target [{self.purchase_target}] type [{self.type}] name [{self.name}] memo [{self.memo}] price [{self.price}] store [{self.store}] category [{self.category}]"
 
@@ -221,10 +253,15 @@ class LegacyTransaction(TransactionBase):
     def __str__(self):
         return f"LegacyTransaction date [{self.get_date}] payment method [{self.payment_method}] target [{self.purchase_target}] type [{self.type}] name [{self.name}] memo [{self.memo}] price [{self.price}] store [{self.store}] category [{self.category}]"
 
+
 class PendingTransaction(TransactionBase):
-    category = models.CharField(
-        max_length=300
+    category = models.ForeignKey(
+        TransactionCategory, on_delete=models.CASCADE
     )
+
+    @property
+    def get_update_link(self):
+        return f"/{update_pending_transaction}{self.id}"
 
     def __str__(self):
         return f"PendingTransaction date [{self.get_date}] payment method [{self.payment_method}] target [{self.purchase_target}] type [{self.type}] name [{self.name}] memo [{self.memo}] price [{self.price}] store [{self.store}] category [{self.category}]"

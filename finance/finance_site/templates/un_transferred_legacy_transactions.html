@@ -16,7 +16,6 @@
             <th>Store</th>
             <th>Receipts</th>
             <th>Category</th>
-            <th>Transaction to Link</th>
         </tr>
         {%  for legacy_transaction_details_csv_transaction in legacy_transaction_details_csv_transactions %}
             <tr>
@@ -31,14 +30,6 @@
                 <td><input type="text" name="[legacy_transaction_details_csv_transactions][{{legacy_transaction_details_csv_transaction.id}}][store]" value="{{ legacy_transaction_details_csv_transaction.store }}"></td>
                 <td>{{ legacy_transaction_details_csv_transaction.receipt }}</td>
                 <td><input type="text" name="[legacy_transaction_details_csv_transactions][{{legacy_transaction_details_csv_transaction.id}}][category]" value="{{ legacy_transaction_details_csv_transaction.category }}"></td>
-                <td>
-                    <select name="[legacy_transaction_details_csv_transactions][{{legacy_transaction_details_csv_transaction.id}}][bank_transaction]">
-                        <option value="None">None</option>
-                        {%  for unlinked_transaction in unlinked_transactions %}
-                            <option value="{{ unlinked_transaction.id }}">{{ unlinked_transaction }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
             </tr>
         {%  endfor %}
     </table>
