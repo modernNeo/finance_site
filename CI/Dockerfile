@@ -10,9 +10,9 @@ RUN apk add postgresql
 
 WORKDIR /src/app
 COPY requirements.txt requirements.txt
-COPY finance/finance finance
-COPY finance/finance_site finance_site
-COPY finance/manage.py manage.py
+COPY finance_site/finance finance
+COPY finance_site/finance_site finance_site
+COPY finance_site/manage.py manage.py
 COPY CI/run_docker.sh run_docker.sh
 COPY CI/wait-for-postgres.sh wait-for-postgres.sh
 

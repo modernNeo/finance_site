@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-_kj^r-1k&!nma!#j_1yq54#rn29nsgl4+t714tnv_3%%j)#r*o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "finance.modernneo.com"]
 
 # Application definition
 
