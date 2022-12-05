@@ -14,7 +14,7 @@ export compose_project_name=$(echo "$COMPOSE_PROJECT_NAME" | awk '{print tolower
 export prod_image_name_lower_case=$(echo "$prod_container_name" | awk '{print tolower($0)}')
 
 docker rm -f ${prod_container_name} || true
-docker image rm -f ${prod_image_name_lower_case} || true
+docker image rm -f $(docker images  | grep -i "${prod_image_name_lower_case}" | awk '{print $3}') || true
 docker volume create --name="${COMPOSE_PROJECT_NAME}_logs"
 docker volume create --name="${COMPOSE_PROJECT_NAME}_receipt_images"
 if [ "${JENKINS}" == "true" ]; then
