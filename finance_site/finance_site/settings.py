@@ -134,4 +134,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
 
 MEDIA_URL = '/MEDIA_URL/'
+MEDIA_ROOT = BASE_DIR.parent / 'app/receipt_images'
 print(f'[settings.py] MEDIA_URL set to {MEDIA_URL}')
+print(f'[settings.py] MEDIA_ROOT set to {MEDIA_ROOT}')

@@ -12,8 +12,8 @@ services:  #Services that are needed for the finance_site app
         ports:
             - 8000:8000
         volumes: #volume are for hot reload
-            - logs:/usr/src/app/logs
-            - receipt_images:/usr/src/app/receipt_images
+            - logs:/src/app/logs
+            - receipt_images:/src/app/receipt_images
         depends_on:   # used to ensure that docker wont start finance_site until after it has started the database container
             - "db"
         container_name: "${COMPOSE_PROJECT_NAME}_app"
