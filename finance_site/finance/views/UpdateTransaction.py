@@ -62,7 +62,7 @@ class UpdateTransaction(View):
             print(file_name)
             print(receipt)
             print(receipt.name)
-            if transaction.receipt is not None and (receipt.name != transaction.receipt):
+            if transaction.receipt != "" and (receipt.name != transaction.receipt):
                 fs.delete(transaction.receipt.name)
             transaction.receipt = file_name
         transaction.categories = Transaction.objects.get(id=request.POST['categories'])
