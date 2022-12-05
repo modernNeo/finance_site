@@ -10,6 +10,7 @@ class NewPendingItem(View):
     def get(self, request):
         pending_transactions = PendingTransaction.objects.filter(price__lt=0)
         return render(request, 'create_or_update_pending_item.html', context={
+            "current_page": "create_pending_item",
             "payment_method_choices": [payment_choice[0] for payment_choice in TransactionBase.payment_method_choices],
             "purchase_target_choices": [purchase_target_choice[0] for purchase_target_choice in
                                         TransactionBase.purchase_target_choices],

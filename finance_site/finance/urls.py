@@ -18,11 +18,13 @@ from finance.views.NewPendingTransaction import NewPendingTransaction
 from finance.views.NewTransactionRefundMapping import NewTransactionRefundMapping
 from finance.views.NewTransactionReimbursementMapping import NewTransactionReimbursementMapping
 from finance.views.NewTransactionRepaidMapping import NewTransactionRepaidMapping
+from finance.views.ShowAllDebitCardTransactions import ShowAllDebitCardTransactions
+from finance.views.ShowAllMasterCardTransactions import ShowAllMasterCardTransactions
+from finance.views.ShowCategorizedDebitCardTransactions import ShowCategorizedDebitCardTransactions
+from finance.views.ShowCategorizedMasterCardTransactions import ShowCategorizedMasterCardTransactions
 from finance.views.ShowCategorizedTransactions import ShowCategorizedTransactions
-from finance.views.ShowDebitCardTransactions import ShowDebitCardTransactions
 from finance.views.ShowItemsAwaitingRepayment import ShowItemsAwaitingRepayment
 from finance.views.ShowMasterCardPaymentBreakdown import ShowMasterCardPaymentBreakdown
-from finance.views.ShowMasterCardTransactions import ShowMasterCardTransactions
 from finance.views.ShowUnTransferredLegacyDebitCardTransactions import ShowUnTransferredLegacyDebitCardTransactions
 from finance.views.ShowUnTransferredLegacyMasterCardTransactions import \
     ShowUnTransferredLegacyMasterCardTransactions
@@ -45,9 +47,6 @@ from finance.views.UpdateTransactionRepaidMapping import UpdateTransactionRepaid
 urlpatterns = [
     path('', ShowCategorizedTransactions.as_view(), name="index"),
     path('master_card_payment_breakdown', ShowMasterCardPaymentBreakdown.as_view(), name="payment_breakdown"),
-    path('master_card', ShowMasterCardTransactions.as_view(), name="categorized_master_card"),
-    path('debit_card', ShowDebitCardTransactions.as_view(), name="categorized_debit_card"),
-
     path(f'{update_bank_transaction}<int:transaction_id>', UpdateTransaction.as_view(), name="update_bank_transaction"),
     path(f'{update_bank_item}<int:item_id>', UpdateItem.as_view(), name="update_item"),
 
@@ -125,15 +124,19 @@ urlpatterns = [
     ),
     path('awaiting_payment', ShowItemsAwaitingRepayment.as_view(), name='items_awaiting_repayment'),
     path('legacy_import', ImportFromLegacySystem.as_view(), name="import_legacy"),
+    path('master_card/all', ShowAllMasterCardTransactions.as_view(), name="all_master_card"),
+    path('debit_card/all', ShowAllDebitCardTransactions.as_view(), name="all_debit_card"),
+    path('master_card/categorized', ShowCategorizedMasterCardTransactions.as_view(), name="categorized_master_card"),
+    path('debit_card/categorized', ShowCategorizedDebitCardTransactions.as_view(), name="categorized_debit_card"),
     path(
-        'uncategorized/master_card',
+        'master_card/uncategorized',
         ShowUncategorizedMasterCardTransactions.as_view(),
-        name="uncategorized_transactions_mastercard"
+        name="uncategorized_mastercard"
     ),
     path(
-        'uncategorized/debit_card',
+        'debit_card/uncategorized',
         ShowUncategorizedDebitCardTransactions.as_view(),
-        name="uncategorized_transactions_debitcard"
+        name="uncategorized_debitcard"
     ),
     path(
         'un_transferred_legacy/master_card',

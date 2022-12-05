@@ -99,7 +99,8 @@ class ShowMasterCardPaymentBreakdown(View):
                             refunds = item.get_transactions_refunding_this_item()
                             reimbursements = item.get_transactions_reimbursing_this_item()
                             paybacks = item.get_transaction_paying_back_this_item()
-                            item_was_never_revoked = len(refunds) == 0 and len(reimbursements) == 0 and len(paybacks) == 0
+                            item_was_never_revoked = len(refunds) == 0 and len(reimbursements) == 0 and len(
+                                paybacks) == 0
                             if item_was_never_revoked:
                                 add_unrevoked_item(
                                     mastercard_expenses, transaction.get_month, item.category.category, item
@@ -124,7 +125,8 @@ class ShowMasterCardPaymentBreakdown(View):
                             reimbursements = item.get_transactions_reimbursing_this_item()
                             paybacks = item.get_transaction_paying_back_this_item()
 
-                            item_was_never_revoked = len(refunds) == 0 and len(reimbursements) == 0 and len(paybacks) == 0
+                            item_was_never_revoked = len(refunds) == 0 and len(reimbursements) == 0 and len(
+                                paybacks) == 0
                             if item_was_never_revoked:
                                 add_unrevoked_item(mastercard_expenses, item.get_month, item.category.category, item)
                             elif len(refunds) > 0:
@@ -145,7 +147,8 @@ class ShowMasterCardPaymentBreakdown(View):
                     refunds = transaction.get_transactions_refunding_this_transaction()
                     reimbursements = transaction.get_transactions_paying_back_this_transaction()
                     paybacks = transaction.paybacks_mapping_set.all()
-                    transaction_was_never_revoked = len(refunds) == 0 and len(reimbursements) == 0 and len(paybacks) == 0
+                    transaction_was_never_revoked = len(refunds) == 0 and len(reimbursements) == 0 and len(
+                        paybacks) == 0
                     if transaction_was_never_revoked:
                         add_regular_transaction(
                             mastercard_expenses, transaction.get_month, transaction.category.category, transaction
@@ -169,6 +172,7 @@ class ShowMasterCardPaymentBreakdown(View):
             request, 'payment_breakdown.html',
             context={
                 "mastercard_expenses": mastercard_expenses,
+                "current_page": "payment_breakdown",
                 "months": months,
                 "current_month": "2022-11",
             }

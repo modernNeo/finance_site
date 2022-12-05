@@ -1,12 +1,14 @@
+import datetime
+
 from django.shortcuts import render
 from django.views import View
 
 from finance.models.TransactionModels import Transaction
 
 
-class ShowDebitCardTransactions(View):
+class ShowAllMasterCardTransactions(View):
     def get(self, request):
-        transactions = Transaction.objects.all().filter(payment_method="Debit Card", category__isnull=False).order_by('-date')
+        transactions = Transaction.objects.all().filter(payment_method="MasterCard").order_by('-date')
         months = list(set([transaction.get_month for transaction in transactions]))
         months.sort()
         months = list(reversed(months))
@@ -20,8 +22,8 @@ class ShowDebitCardTransactions(View):
             request, 'index.html', context=
             {
                 "categorized_transactions": categorized_transactions,
-                "current_page": "debit_card",
+                "current_page": "all_master_card",
                 "months": months,
-                "current_month": "2022-11"
+                "current_month": datetime.datetime.now().strftime("%Y-%m")
             }
         )

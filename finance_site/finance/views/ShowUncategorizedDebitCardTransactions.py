@@ -8,18 +8,15 @@ from finance.models.TransactionModels import Transaction
 
 class ShowUncategorizedDebitCardTransactions(View):
     def get(self, request):
-        transactions = Transaction.objects.all().filter(payment_method="Debit Card").order_by(
-            '-date')
-        uncategorized_transactions = []
-        for transaction in transactions:
-            if transaction.category is None and len(transaction.item_set.all()) == 0:
-                uncategorized_transactions.append(transaction)
-
+        transactions = Transaction.objects.all().filter(
+            payment_method="Debit Card", category__isnull=True
+        ).order_by('-date')
         return render(
             request, 'uncategorized_transactions.html', context=
             {
-                "transactions": uncategorized_transactions,
-                "current_page": "uncategorized_debitcard"
+                "transactions": transactions,
+                "current_page": "uncategorized_debit_card",
+                "transaction_type" : "Debit Card"
             }
         )
 
