@@ -18,6 +18,7 @@ services:  #Services that are needed for the finance_site app
             - "db"
         container_name: "${COMPOSE_PROJECT_NAME}_app"
         restart: unless-stopped
+        image: "${COMPOSE_PROJECT_NAME}_app"
         networks:
             - finance_site_network
         stdin_open: true # docker run -i
