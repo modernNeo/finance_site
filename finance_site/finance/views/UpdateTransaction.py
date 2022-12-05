@@ -57,7 +57,12 @@ class UpdateTransaction(View):
         transaction.store = request.POST['store']
         transaction.note = request.POST['note']
         if file_name is not None:
-            if transaction.receipt.name is not None and (file_name != transaction.receipt):
+            print(transaction.receipt)
+            print(transaction.receipt.name)
+            print(file_name)
+            print(receipt)
+            print(receipt.name)
+            if transaction.receipt is not None and (receipt.name != transaction.receipt):
                 fs.delete(transaction.receipt.name)
             transaction.receipt = file_name
         transaction.categories = Transaction.objects.get(id=request.POST['categories'])
