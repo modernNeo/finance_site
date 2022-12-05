@@ -11,13 +11,14 @@ pipeline {
             }
             steps {
                 withCredentials(
-                [string(credentialsId: 'POSTGRES_PASSWORD', variable: 'POSTGRES_PASSWORD'),
-                string(credentialsId: 'FINANCE_SITE_DB_PASSWORD', variable: 'FINANCE_SITE_DB_PASSWORD')]
+                [string(credentialsId: 'FINANCE_SITE_POSTGRES_PASSWORD', variable: 'FINANCE_SITE_POSTGRES_PASSWORD'),
+                string(credentialsId: 'FINANCE_SITE_POSTGRES_USER', variable: 'FINANCE_SITE_POSTGRES_USER'),
+                string(credentialsId: 'FINANCE_SITE_POSTGRES_DB', variable: 'FINANCE_SITE_POSTGRES_DB')]
                 ){
                     sh label: '', script: """bash -c \'
-                        export POSTGRES_DB="'"${POSTGRES_DB}"'";
-                        export POSTGRES_USER="'"${POSTGRES_USER}"'";
-                        export POSTGRES_PASSWORD="'"${POSTGRES_PASSWORD}"'";
+                        export POSTGRES_DB="'"${FINANCE_SITE_POSTGRES_DB}"'";
+                        export POSTGRES_USER="'"${FINANCE_SITE_POSTGRES_USER}"'";
+                        export POSTGRES_PASSWORD="'"${FINANCE_SITE_POSTGRES_PASSWORD}"'";
                         ./CI/deploy.sh;
                     \'"""
                 }
