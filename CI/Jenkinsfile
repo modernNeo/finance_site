@@ -19,6 +19,7 @@ pipeline {
                         export POSTGRES_DB="'"${FINANCE_SITE_POSTGRES_DB}"'";
                         export POSTGRES_USER="'"${FINANCE_SITE_POSTGRES_USER}"'";
                         export POSTGRES_PASSWORD="'"${FINANCE_SITE_POSTGRES_PASSWORD}"'";
+                        export JENKINS="true";
                         ./CI/deploy.sh;
                     \'"""
                 }
