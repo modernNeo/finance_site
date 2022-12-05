@@ -17,7 +17,13 @@ docker rm -f ${prod_container_name} || true
 docker image rm -f ${prod_image_name_lower_case} || true
 docker volume create --name="${COMPOSE_PROJECT_NAME}_logs"
 docker volume create --name="${COMPOSE_PROJECT_NAME}_receipt_images"
-docker compose -f "${docker_compose_file}" up -d
+DOCKER="${docker-compose}"
+if [ -z ${DOCKER} ]; then
+  docker compose -f "${docker_compose_file}" up -d
+else
+  ${DOCKER} -f "${docker_compose_file}" up -d
+fi
+
 sleep 20
 
 container_failed=$(docker ps -a -f name=${prod_container_name} --format "{{.Status}}" | head -1)
