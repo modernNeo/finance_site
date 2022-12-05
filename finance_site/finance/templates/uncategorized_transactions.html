@@ -1,6 +1,6 @@
 {%  include 'header.html' %}
     {%  csrf_token %}
-    <ht>Uncategorized {{ transaction_type }} Transactions</ht>
+    <h1>Uncategorized {{ transaction_type }} Transactions</h1>
     <table style="text-align: left">
         <tr>
             <th>ID</th>
@@ -19,24 +19,23 @@
             <th>Category</th>
             <th>Note</th>
         </tr>
-        {%  for transaction in transactions %}
+        {%  for uncategorized_transaction in uncategorized_transactions %}
             <tr>
-                <td><a target="_blank" href="{{transaction.get_update_link}}">Edit</a> <input readonly size="5" type="number" name="[un_categorized_transaction][{{transaction.id}}][id]" value="{{ transaction.id}}"></td>
-                <td>{{ transaction.get_front_end_month }}</td>
-                <td>{{ transaction.get_date }}</td>
-                <td>{{ transaction.payment_method }}</td>
-                <td>{{ transaction.payment_method }}</td>
-                <td>{{ transaction.method_of_transaction }}</td>
-                <td>{{ transaction.purchased_by }}</td>
-                <td>{{ transaction.purchase_target }}</td>
-                <td>{{ transaction.type }}</td>
-                <td>[{{ transaction.name }}]</td>
-                <td>[{{ transaction.memo }}]</td>
-                <td>{{ transaction.formatted_price }}</td>
-                <td>{{ transaction.store }}</td>
-                <td>{{ transaction.receipt }}</td>
-                <td>{{ transaction.category.category }}</td>
-                <td>{{ transaction.note }}></td>
+                <td><a target="_blank" href="{{uncategorized_transaction.get_update_link}}">Edit</a></td>
+                <td>{{ uncategorized_transaction.get_front_end_month }}</td>
+                <td>{{ uncategorized_transaction.get_date }}</td>
+                <td>{{ uncategorized_transaction.payment_method }}</td>
+                <td>{{ uncategorized_transaction.method_of_transaction }}</td>
+                <td>{{ uncategorized_transaction.type }}</td>
+                <td>{{ uncategorized_transaction.purchased_by }}</td>
+                <td>{{ uncategorized_transaction.purchase_target }}</td>
+                <td>[{{ uncategorized_transaction.name }}]</td>
+                <td>[{{ uncategorized_transaction.memo }}]</td>
+                <td>{{ uncategorized_transaction.formatted_price }}</td>
+                <td>{{ uncategorized_transaction.store }}</td>
+                <td>{{ uncategorized_transaction.receipt }}</td>
+                <td>{{ uncategorized_transaction.category.category }}</td>
+                <td>{{ uncategorized_transaction.note }}></td>
                 </td>
             </tr>
         {%  endfor %}

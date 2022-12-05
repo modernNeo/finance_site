@@ -21,6 +21,8 @@ class ShowCategorizedMasterCardTransactions(View):
             if transaction.get_month not in categorized_transactions:
                 categorized_transactions[transaction.get_month] = []
             categorized_transactions[transaction.get_month].append(transaction)
+            for item in transaction.item_set.all():
+                categorized_transactions[transaction.get_month].append(item)
         return render(
             request, 'index.html', context=
             {

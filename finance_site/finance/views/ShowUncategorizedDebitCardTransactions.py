@@ -11,12 +11,16 @@ class ShowUncategorizedDebitCardTransactions(View):
         transactions = Transaction.objects.all().filter(
             payment_method="Debit Card", category__isnull=True
         ).order_by('-date')
+        uncategorized_transactions = []
+        for transaction in transactions:
+            uncategorized_transactions.append(transaction)
+            for item in transaction.item_set.all():
+                uncategorized_transactions.append(item)
         return render(
             request, 'uncategorized_transactions.html', context=
             {
-                "transactions": transactions,
+                "uncategorized_transactions": uncategorized_transactions,
                 "current_page": "uncategorized_debit_card",
-                "transaction_type" : "Debit Card"
+                "transaction_type": "Debit Card"
             }
         )
-
