@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from django.views.generic.base import View
 
@@ -118,7 +120,7 @@ class ShowCategorizedTransactions(View):
                 "category_totals": category_totals,
                 "current_page": "categorized",
                 "months": months,
-                "current_month": "2022-11",
+                "current_month": datetime.datetime.now().strftime("%Y-%m"),
             }
         )
 

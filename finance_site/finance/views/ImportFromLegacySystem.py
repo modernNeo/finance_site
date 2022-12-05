@@ -82,7 +82,7 @@ class ImportFromLegacySystem(View):
                 try:
                     date = datetime.datetime.strptime(line[0], "%m/%d/%Y").astimezone(
                         pytz.timezone('America/Vancouver')
-                    ) + datetime.timedelta(hours=8)
+                    )
                 except ValueError:
                     pass
                 if date is not None:
@@ -102,7 +102,7 @@ class ImportFromLegacySystem(View):
                 try:
                     date = datetime.datetime.strptime(line[0], "%m/%d/%Y").astimezone(
                         pytz.timezone('America/Vancouver')
-                    ) + datetime.timedelta(hours=8)
+                    )
                 except ValueError:
                     pass
                 if date is not None:
@@ -129,7 +129,7 @@ class ImportFromLegacySystem(View):
                     try:
                         date = datetime.datetime.strptime(legacy_transaction_detail[1], "%Y-%m-%d").astimezone(
                             pytz.timezone('America/Vancouver')
-                        ) + datetime.timedelta(hours=8)
+                        )
                     except ValueError:
                         pass
                     if date is not None:
@@ -513,7 +513,7 @@ class ImportFromLegacySystem(View):
                     try:
                         date = datetime.datetime.strptime(legacy_transaction_detail[1], "%Y-%m-%d").astimezone(
                             pytz.timezone('America/Vancouver')
-                        ) + datetime.timedelta(hours=8)
+                        )
                     except ValueError:
                         pass
                     if date is not None:

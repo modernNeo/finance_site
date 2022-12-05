@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.shortcuts import render
@@ -174,7 +175,7 @@ class ShowMasterCardPaymentBreakdown(View):
                 "mastercard_expenses": mastercard_expenses,
                 "current_page": "payment_breakdown",
                 "months": months,
-                "current_month": "2022-11",
+                "current_month": datetime.datetime.now().strftime("%Y-%m"),
             }
         )
 
