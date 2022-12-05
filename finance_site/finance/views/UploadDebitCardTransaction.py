@@ -11,7 +11,10 @@ from finance.models.TransactionModels import Transaction
 
 class UploadDebitCardTransaction(View):
     def get(self, request):
-        return render(request, 'upload_csv.html', context={"transaction_type": "Debit Card"})
+        return render(request, 'upload_csv.html', context={
+            "transaction_type": "Debit Card",
+            "current_page": "upload_master_card_csv"
+        })
 
     def post(self, request):
         receipt = request.FILES.get("csv_upload", None)
@@ -20,8 +23,8 @@ class UploadDebitCardTransaction(View):
             file_name = fs.save(receipt.name, receipt)
             print(receipt)
             print(file_name)
-            with open(file_name, 'r') as credit_card:
-                csvFile = csv.reader(credit_card)
+            with open(file_name, 'r') as debit_card_csv:
+                csvFile = csv.reader(debit_card_csv)
                 for line in csvFile:
                     date = None
                     try:

@@ -9,9 +9,12 @@ from django.views import View
 from finance.models.TransactionModels import Transaction
 
 
-class UploadCreditCardTransaction(View):
+class UploadMasterCardTransaction(View):
     def get(self, request):
-        return render(request, 'upload_csv.html', context={"transaction_type": "Credit Card"})
+        return render(request, 'upload_csv.html', context={
+            "transaction_type": "MasterCard",
+            "current_page": "upload_master_card_csv"
+        })
 
     def post(self, request):
         receipt = request.FILES.get("csv_upload", None)
@@ -20,8 +23,8 @@ class UploadCreditCardTransaction(View):
             file_name = fs.save(receipt.name, receipt)
             print(receipt)
             print(file_name)
-            with open(file_name, 'r') as credit_card:
-                csvFile = csv.reader(credit_card)
+            with open(file_name, 'r') as master_card:
+                csvFile = csv.reader(master_card)
                 for line in csvFile:
                     date = None
                     try:

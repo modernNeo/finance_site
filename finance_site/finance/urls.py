@@ -41,8 +41,8 @@ from finance.views.UpdateTransaction import UpdateTransaction
 from finance.views.UpdateTransactionRefundMapping import UpdateTransactionRefundMapping
 from finance.views.UpdateTransactionReimbursementMapping import UpdateTransactionReimbursementMapping
 from finance.views.UpdateTransactionRepaidMapping import UpdateTransactionRepaidMapping
-from finance.views.UploadCreditCardTransaction import UploadCreditCardTransaction
 from finance.views.UploadDebitCardTransaction import UploadDebitCardTransaction
+from finance.views.UploadMasterCardTransaction import UploadMasterCardTransaction
 
 urlpatterns = [
                   path('', ShowCategorizedTransactions.as_view(), name="index"),
@@ -155,6 +155,6 @@ urlpatterns = [
                       name="un_transferred_legacy_debitcard"
                   ),
                   # path('transaction/add', add_transaction_view, name="add_transaction"),
-                  path('csv/upload/credit_card', UploadCreditCardTransaction.as_view(), name="upload_credit_card_csv"),
+                  path('csv/upload/master_card', UploadMasterCardTransaction.as_view(), name="upload_master_card_csv"),
                   path('csv/upload/debit_card', UploadDebitCardTransaction.as_view(), name="upload_debit_card_csv")
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -75,8 +75,8 @@ class ImportFromLegacySystem(View):
         TransactionBase.objects.all().delete()
 
         TransactionLabel.objects.all().delete()
-        with open(f"{BASE_DIR.parent}/chequing.csv", 'r') as credit_card:
-            csvFile = csv.reader(credit_card)
+        with open(f"{BASE_DIR.parent}/chequing.csv", 'r') as chequing_csv:
+            csvFile = csv.reader(chequing_csv)
             for line in csvFile:
                 date = None
                 try:
@@ -95,8 +95,8 @@ class ImportFromLegacySystem(View):
                         memo=line[3],
                         price=line[4]
                     ).save()
-        with open(f"{BASE_DIR.parent}/credit_card.csv", 'r') as credit_card:
-            csvFile = csv.reader(credit_card)
+        with open(f"{BASE_DIR.parent}/credit_card.csv", 'r') as master_card_csv:
+            csvFile = csv.reader(master_card_csv)
             for line in csvFile:
                 date = None
                 try:
@@ -109,7 +109,7 @@ class ImportFromLegacySystem(View):
                     Transaction(
                         month=date,
                         date=date,
-                        payment_method="Mastercard",
+                        payment_method="MasterCard",
                         method_of_transaction=line[1],
                         name=line[2],
                         memo=line[3],
@@ -617,5 +617,6 @@ class ImportFromLegacySystem(View):
                                 matching_uncategorized_bank_csv_transaction.save()
                                 categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
                 i += 1
+        print("Import from legacy system complete :)")
         return HttpResponseRedirect("/")
 
