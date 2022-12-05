@@ -40,4 +40,4 @@ volumes:
 networks:
     finance_site_network:
         name: finance_site_network
-        driver: bridge
+        external: true
