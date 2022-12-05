@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "finance.modernneo.com"]
 
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1", "https://finance.modernneo.com"]
+
 # Application definition
 
 INSTALLED_APPS = [
