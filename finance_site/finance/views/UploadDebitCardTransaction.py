@@ -13,7 +13,7 @@ class UploadDebitCardTransaction(View):
     def get(self, request):
         return render(request, 'upload_csv.html', context={
             "transaction_type": "Debit Card",
-            "current_page": "upload_master_card_csv"
+            "current_page": "upload_debit_card_csv"
         })
 
     def post(self, request):
