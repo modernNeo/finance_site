@@ -75,7 +75,7 @@ class ImportFromLegacySystem(View):
         TransactionBase.objects.all().delete()
 
         TransactionLabel.objects.all().delete()
-        with open(f"{BASE_DIR.parent}/chequing.CSV", 'r') as credit_card:
+        with open(f"{BASE_DIR.parent}/chequing.csv", 'r') as credit_card:
             csvFile = csv.reader(credit_card)
             for line in csvFile:
                 date = None
