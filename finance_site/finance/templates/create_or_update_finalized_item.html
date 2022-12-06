@@ -4,9 +4,9 @@
     {%  csrf_token %}
     <button type="submit" name="action" value="update_item">Create or Update Finalized Item</button>
     <button type="submit" name="action" value="delete_item">Delete Item</button>
-    <p>Linked Transaction: {{ item.finalized_transaction }}</p>
-    <br><br><b>Month: </b>{{ item.finalized_transaction.get_front_end_month }}
-    <br><br><b>Date: </b>{{ item.finalized_transaction.get_front_end_date }}
+    <p>Linked Transaction: {{ finalized_transaction }}</p>
+    <br><br><b>Month: </b>{{ finalized_transaction.get_front_end_month }}
+    <br><br><b>Date: </b>{{ finalized_transaction.get_front_end_date }}
     <br><br><b>Payment Method: </b>{{ item.payment_method }}
     <br><br><b>Purchase Target: </b>
         <select name="purchase_target">
