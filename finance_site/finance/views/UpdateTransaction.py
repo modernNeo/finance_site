@@ -51,15 +51,14 @@ class UpdateTransaction(View):
         finalized_transaction.who_will_pay = request.POST['who_will_pay']
         finalized_transaction.store = request.POST['store']
         receipt = request.FILES.get("receipt", None)
-        fs = FileSystemStorage()
-        file_name = None
         if receipt is not None:
-            file_name = fs.save(receipt.name, receipt)
-        if file_name is not None:
-            if finalized_transaction.receipt != "" and (receipt.name != finalized_transaction.receipt):
-                fs.delete(finalized_transaction.receipt.name)
-            finalized_transaction.receipt = file_name
+            fs = FileSystemStorage()
+            new_receipt_name = fs.save(receipt.name, receipt)
+            old_receipt_name = finalized_transaction.receipt.name
+            if old_receipt_name != "" and (new_receipt_name != old_receipt_name):
+                fs.delete(old_receipt_name)
+            finalized_transaction.receipt = new_receipt_name
         finalized_transaction.note = request.POST['note']
-        finalized_transaction.category = FinalizedTransaction.objects.get(id=request.POST['category'])
+        finalized_transaction.category = TransactionCategory.objects.get(id=request.POST['category'])
         finalized_transaction.save()
         return HttpResponseRedirect(finalized_transaction.get_update_link)
