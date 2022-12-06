@@ -10,6 +10,7 @@
     <br><br><b>Payment Method: </b>{{ item.payment_method }}
     <br><br><b>Purchase Target: </b>
         <select name="purchase_target">
+            <option value="None">None</option>
             {%  for purchase_target_choice in purchase_target_choices %}
                 {%  if purchase_target_choice == item.purchase_target %}
                     <option selected value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
@@ -20,6 +21,7 @@
         </select>
     <br><br><b>Who Will Pay: </b>
         <select name="who_will_pay">
+            <option value="None">None</option>
             {%  for who_will_pay_choice in who_will_pay_choices %}
                 {%  if who_will_pay_choice == item.who_will_pay %}
                     <option selected value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
@@ -35,6 +37,7 @@
     <br><br><b>Processed: </b><input type="checkbox" name="processed" {%  if item.processed %} checked {%  endif %}> {{ item.processed }}
     <br><br><b>Category: </b>
         <select name="category">
+            <option value="None">None</option>
             {%  for category in categories %}
                 {%  if category.category == item.category.category %}
                     <option selected value="{{ category.id }}">{{ category.category }}</option>

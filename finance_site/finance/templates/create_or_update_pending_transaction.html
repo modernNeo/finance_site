@@ -7,6 +7,7 @@
     <br><br><b>Date: </b><input type="date" name="date" value="{{ pending_transaction.get_front_end_date }}">
     <br><br><b>Payment Method: </b>
         <select name="payment_method">
+            <option value="None">None</option>
             {%  for payment_method_choice in payment_method_choices %}
                 {%  if payment_method_choice == pending_transaction.payment_method %}
                     <option selected value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
@@ -17,6 +18,7 @@
         </select>
     <br><br><b>Purchase Target: </b>
         <select name="purchase_target">
+            <option value="None">None</option>
             {%  for purchase_target_choice in purchase_target_choices %}
                 {%  if purchase_target_choice == pending_transaction.purchase_target %}
                     <option selected value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
@@ -27,6 +29,7 @@
         </select>
     <br><br><b>Who Will Pay: </b>
         <select name="who_will_pay">
+            <option value="None">None</option>
             {%  for who_will_pay_choice in who_will_pay_choices %}
                 {%  if who_will_pay_choice == pending_transaction.who_will_pay %}
                     <option selected value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
@@ -40,6 +43,7 @@
     <br><br><b>Note: </b><input type="text" name="note" value="{{ pending_transaction.note }}">
     <br><br><b>Category: </b>
         <select name="category">
+            <option value="None">None</option>
             {%  for category in categories %}
                 {%  if category.category == pending_transaction.category.category %}
                     <option selected value="{{ category.id }}">{{ category.category }}</option>

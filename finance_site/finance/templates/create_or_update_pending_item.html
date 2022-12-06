@@ -6,6 +6,7 @@
     <button type="submit">Crate or Update Pending Item</button>
     <br><br><b>Pending Transaction: </b>
         <select name="pending_transaction">
+            <option value="None">None</option>
             {%  for pending_transaction in pending_transactions %}
                 {%  if pending_transaction.id == pending_item.pending_transaction.id %}
                     <option selected value="{{ pending_transaction.id }}">{{ pending_transaction }}</option>
@@ -16,6 +17,7 @@
         </select>
     <br><br><b>Purchase Target: </b>
         <select name="purchase_target">
+            <option value="None">None</option>
             {%  for purchase_target_choice in purchase_target_choices %}
                 {%  if purchase_target_choice == pending_item.purchase_target %}
                     <option selected value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
@@ -26,6 +28,7 @@
         </select>
     <br><br><b>Who Will Pay: </b>
         <select name="who_will_pay">
+            <option value="None">None</option>
             {%  for who_will_pay_choice in who_will_pay_choices %}
                 {%  if who_will_pay_choice == pending_item.who_will_pay %}
                     <option selected value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
@@ -38,6 +41,7 @@
     <br><br><b>Note: </b><input type="text" name="note" value="{{ pending_item.note }}">
     <br><br><b>Category: </b>
         <select name="category">
+            <option value="None">None</option>
             {%  for category in categories %}
                 {%  if category.category == pending_item.category.category %}
                     <option selected value="{{ category.id }}">{{ category.category }}</option>
