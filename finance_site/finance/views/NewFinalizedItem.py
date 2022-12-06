@@ -18,7 +18,7 @@ class NewFinalizedItem(View):
             "who_will_pay_choices": [who_will_pay_choice[0] for who_will_pay_choice in
                                      FinalizedItem.who_will_pay_choices],
             "categories": TransactionCategory.objects.all(),
-            "finalize_transaction": FinalizedTransaction.objects.get(id=transaction_id),
+            "finalized_transaction": FinalizedTransaction.objects.get(id=transaction_id),
             "finalized_transactions": FinalizedTransaction.objects.filter(price__lt=0).order_by('-date')
         })
 
