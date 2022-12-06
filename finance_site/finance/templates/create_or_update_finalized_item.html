@@ -34,7 +34,7 @@
     <br><br><b>Note: </b><input type="text" name="note" value="{{ item.note }}">
     <br><br><b>Processed: </b><input type="checkbox" name="processed" {%  if item.processed %} checked {%  endif %}> {{ item.processed }}
     <br><br><b>Category: </b>
-        <select name="categories">
+        <select name="category">
             {%  for category in categories %}
                 {%  if category.category == item.category.category %}
                     <option selected value="{{ category.id }}">{{ category.category }}</option>
