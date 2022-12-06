@@ -3,32 +3,32 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 
-from finance.models.TransactionModels import Transaction, TransactionBase, TransactionCategory
+from finance.models.TransactionModels import FinalizedTransaction, TransactionBase, TransactionCategory
 
 
 class UpdateTransaction(View):
     def get(self, request, transaction_id):
-        transaction = Transaction.objects.get(id=transaction_id)
-        transactions_refunding_this_transaction = transaction.get_transactions_refunding_this_transaction()
-        transactions_this_transaction_refunds = transaction.get_transactions_this_transaction_is_refunding()
-        corresponding_internal_transfers = transaction.get_any_internal_transfers_mapped_to_this_etransfer()
-        corresponding_e_transfers = transaction.get_any_etransfers_mapped_to_this_internal_transfer()
-        transactions_reimbursing_this_transaction = transaction.get_transactions_reimbursing_this_transaction()
-        transactions_this_transaction_reimburses = transaction.get_transactions_this_transaction_is_reimbursing()
+        finalized_transaction = FinalizedTransaction.objects.get(id=transaction_id)
+        transactions_refunding_this_transaction = finalized_transaction.get_transactions_refunding_this_transaction()
+        transactions_this_transaction_refunds = finalized_transaction.get_transactions_this_transaction_is_refunding()
+        corresponding_internal_transfers = finalized_transaction.get_any_internal_transfers_mapped_to_this_etransfer()
+        corresponding_e_transfers = finalized_transaction.get_any_etransfers_mapped_to_this_internal_transfer()
+        transactions_reimbursing_this_transaction = finalized_transaction.get_transactions_reimbursing_this_transaction()
+        transactions_this_transaction_reimburses = finalized_transaction.get_transactions_this_transaction_is_reimbursing()
 
-        labels = transaction.transactionlabelintersection_set.all()
-        items = transaction.item_set.all()
+        labels = finalized_transaction.transactionlabelintersection_set.all()
+        items = finalized_transaction.finalizeditem_set.all()
         reimbursed_items = [
-            transactions_obj.item_set.all()
+            transactions_obj.finalizeditem_set.all()
             for transactions_obj in transactions_reimbursing_this_transaction
         ]
         return render(request, 'update_transaction.html', {
-            "transaction": transaction,
+            "transaction": finalized_transaction,
             "payment_method_choices": [payment_choice[0] for payment_choice in TransactionBase.payment_method_choices],
             "purchase_target_choices": [purchase_target_choice[0] for purchase_target_choice in
                                         TransactionBase.purchase_target_choices],
             "who_will_pay_choices": [who_will_pay_choice[0] for who_will_pay_choice in
-                                     Transaction.who_will_pay_choices],
+                                     FinalizedTransaction.who_will_pay_choices],
             "categories": TransactionCategory.objects.all(),
             "transactions_refunding_this_transaction": transactions_refunding_this_transaction,
             "transactions_this_transaction_refunds": transactions_this_transaction_refunds,
@@ -43,28 +43,23 @@ class UpdateTransaction(View):
         })
 
     def post(self, request, transaction_id):
-        transaction = Transaction.objects.get(id=transaction_id)
+        finalized_transaction = FinalizedTransaction.objects.get(id=transaction_id)
+        finalized_transaction.month = request.POST['month']
+        finalized_transaction.date = request.POST['date']
+        finalized_transaction.payment_method = request.POST['payment_method']
+        finalized_transaction.purchase_target = request.POST['purchase_target']
+        finalized_transaction.who_will_pay = request.POST['who_will_pay']
+        finalized_transaction.store = request.POST['store']
         receipt = request.FILES.get("receipt", None)
+        fs = FileSystemStorage()
         file_name = None
         if receipt is not None:
-            fs = FileSystemStorage()
             file_name = fs.save(receipt.name, receipt)
-        transaction.month = request.POST['month']
-        transaction.date = request.POST['date']
-        transaction.payment_method = request.POST['payment_method']
-        transaction.purchase_target = request.POST['purchase_target']
-        transaction.who_will_pay = request.POST['who_will_pay']
-        transaction.store = request.POST['store']
-        transaction.note = request.POST['note']
         if file_name is not None:
-            print(transaction.receipt)
-            print(transaction.receipt.name)
-            print(file_name)
-            print(receipt)
-            print(receipt.name)
-            if transaction.receipt != "" and (receipt.name != transaction.receipt):
-                fs.delete(transaction.receipt.name)
-            transaction.receipt = file_name
-        transaction.categories = Transaction.objects.get(id=request.POST['categories'])
-        transaction.save()
-        return HttpResponseRedirect(transaction.get_update_link)
+            if finalized_transaction.receipt != "" and (receipt.name != finalized_transaction.receipt):
+                fs.delete(finalized_transaction.receipt.name)
+            finalized_transaction.receipt = file_name
+        finalized_transaction.note = request.POST['note']
+        finalized_transaction.category = FinalizedTransaction.objects.get(id=request.POST['category'])
+        finalized_transaction.save()
+        return HttpResponseRedirect(finalized_transaction.get_update_link)

@@ -1,7 +1,7 @@
 from django.db import models
 
-from finance.models.ItemModels import Item, ItemLabel
-from finance.models.TransactionModels import Transaction
+from finance.models.ItemModels import FinalizedItem, ItemLabel
+from finance.models.TransactionModels import FinalizedTransaction
 
 
 # for when a transaction like from cineplex gets refunded
@@ -12,11 +12,11 @@ from finance.urls import update_transaction_refunding_mapping, update_transactio
 
 class TransactionRefund(models.Model):
     original_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='refunds_mapping_set'
     )
     refund_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='refund_for_transaction_original_mapping_set'
     )
 
@@ -29,11 +29,11 @@ class TransactionRefund(models.Model):
 # for I get reimbursed for like health care from Vena or something
 class TransactionReimbursement(models.Model):
     original_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='reimbursements_mapping_set'
     )
     reimbursement_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='reimbursement_for_transaction_original_mapping_set'
     )
     note = models.CharField(
@@ -48,11 +48,11 @@ class TransactionReimbursement(models.Model):
 # for when Mircea or Dawn pay me back for a whole transaction
 class TransactionPayBack(models.Model):
     original_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='paybacks_mapping_set'
     )
     payback_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='payback_for_transaction_original_mapping_set'
     )
     note = models.CharField(
@@ -67,11 +67,11 @@ class TransactionPayBack(models.Model):
 # for when an item like from donalds gets refunded
 class ItemRefund(models.Model):
     original_item = models.ForeignKey(
-        Item, on_delete=models.CASCADE,
+        FinalizedItem, on_delete=models.CASCADE,
         related_name='refunds_mapping_set'
     )
     refund_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='refund_for_item_original_mapping_set'
     )
 
@@ -83,11 +83,11 @@ class ItemRefund(models.Model):
 # if a particular items gets reimbursed by someone like Vena [team lunch]
 class ItemReimbursement(models.Model):
     original_item = models.ForeignKey(
-        Item, on_delete=models.CASCADE,
+        FinalizedItem, on_delete=models.CASCADE,
         related_name='reimbursements_mapping_set'
     )
     reimbursement_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='reimbursement_for_item_original_mapping_set'
     )
     note = models.CharField(
@@ -103,11 +103,11 @@ class ItemReimbursement(models.Model):
 # for when Mircea or Dawn pay me back for a particular item in a transaction
 class ItemPayBack(models.Model):
     original_item = models.ForeignKey(
-        Item, on_delete=models.CASCADE,
+        FinalizedItem, on_delete=models.CASCADE,
         related_name='paybacks_mapping_set'
     )
     payback_transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='payback_for_item_original_mapping_set'
     )
     note = models.CharField(
@@ -121,11 +121,11 @@ class ItemPayBack(models.Model):
 
 class ETransferToInternalTransferMapping(models.Model):
     e_transfer = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='corresponding_internal_transfer_mapping_set'
     )
     internal_transfer = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE,
+        FinalizedTransaction, on_delete=models.CASCADE,
         related_name='corresponding_e_transfer_mapping_set'
     )
 
@@ -135,5 +135,5 @@ class ETransferToInternalTransferMapping(models.Model):
 
 
 class ItemLabelIntersection(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey(FinalizedItem, on_delete=models.CASCADE)
     label = models.ForeignKey(ItemLabel, on_delete=models.CASCADE)

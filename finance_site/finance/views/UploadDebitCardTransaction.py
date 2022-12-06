@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render
 from django.views import View
 
-from finance.models.TransactionModels import Transaction
+from finance.models.TransactionModels import FinalizedTransaction
 
 
 class UploadDebitCardTransaction(View):
@@ -34,7 +34,7 @@ class UploadDebitCardTransaction(View):
                     except ValueError:
                         pass
                     if date is not None:
-                        Transaction(
+                        FinalizedTransaction(
                             month=date,
                             date=date,
                             payment_method="MasterCard",

@@ -47,7 +47,7 @@
     <br><br><b>Note: </b><input type="text" name="note" value="{{ transaction.note }}">
     <br><br><b>Processed: </b><input type="checkbox" name="processed" {%  if transaction.processed %} checked {%  endif %}> {{ transaction.processed }}
     <br><br><b>Category: </b>
-        <select name="categories">
+        <select name="category">
             {%  for category in categories %}
                 {%  if category.category == transaction.category.category %}
                     <option selected value="{{ category.id }}">{{ category.category }}</option>
@@ -118,15 +118,15 @@
                 <br><br>{{ label.label }}
             {%  endfor %}
         {%  endif %}
-    <br><br><b>Items: </b>
+    <br><br><br><b>Items in this transaction:</b>
         {% if items|length == 0 %}
             <p>No items</p>
         {%  else %}
-            <b>Items in this transaction:</b>
             {% for item in items %}
                 <br><br>{{ item }}
             {%  endfor %}
         {%  endif %}
+        <br><a target="_blank" href="/item/finalized/new?transaction_id={{ transaction.id }}">Create Item</a>
     <br><br><b>Reimbursed Items: </b>
         {% if reimbursed_items|length == 0 %}
             <p>No items</p>

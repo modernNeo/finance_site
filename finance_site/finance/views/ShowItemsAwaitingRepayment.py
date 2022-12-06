@@ -1,18 +1,18 @@
 from django.shortcuts import render
 from django.views.generic.base import View
 
-from finance.models.TransactionModels import Transaction
+from finance.models.TransactionModels import FinalizedTransaction
 
 
 class ShowItemsAwaitingRepayment(View):
     def get(self, request):
-        transactions = Transaction.objects.all().filter(price__lt=0).order_by('-date')
+        transactions = FinalizedTransaction.objects.all().filter(price__lt=0).order_by('-date')
         items_waiting_repayment = []
         transactions_waiting_repayment = []
         for transaction in transactions:
             if transaction.category is not None:
                 if transaction.category.category == "Partial":
-                    for item in transaction.item_set.all():
+                    for item in transaction.finalizeditem_set.all():
                         if item.category.category == "Not My Expense":
                             refund_exists = False
                             reimbursement_exists = False

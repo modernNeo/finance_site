@@ -3,12 +3,12 @@ import datetime
 from django.shortcuts import render
 from django.views.generic.base import View
 
-from finance.models.TransactionModels import Transaction
+from finance.models.TransactionModels import FinalizedTransaction
 
 
 class ShowCategorizedTransactions(View):
     def get(self, request):
-        transactions = Transaction.objects.all().filter(category__isnull=False).order_by('-date')
+        transactions = FinalizedTransaction.objects.all().filter(category__isnull=False).order_by('-date')
         months = list(set([transaction.get_month for transaction in transactions]))
         months.sort()
         months = list(reversed(months))
@@ -46,7 +46,7 @@ class ShowCategorizedTransactions(View):
                 if transaction.category.category in categories_i_care_about:
                     increase_price(category_totals, transaction.get_month, transaction.category.category, transaction.price)
                 if transaction.category.category == "Partial" or transaction.category.category == "Categorized Elsewhere":
-                    for item in transaction.item_set.all():
+                    for item in transaction.finalizeditem_set.all():
                         if transaction.get_month not in categorized_transactions:
                             categorized_transactions[transaction.get_month] = []
                         categorized_transactions[transaction.get_month].append(item)

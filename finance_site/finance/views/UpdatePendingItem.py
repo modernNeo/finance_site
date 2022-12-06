@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 
-from finance.models.ItemModels import Item, PendingItem
+from finance.models.ItemModels import FinalizedItem, PendingItem
 from finance.models.TransactionModels import PendingTransaction, TransactionBase, TransactionCategory
 
 
@@ -15,7 +15,7 @@ class UpdatePendingItem(View):
             "purchase_target_choices": [purchase_target_choice[0] for purchase_target_choice in
                                         TransactionBase.purchase_target_choices],
             "who_will_pay_choices": [who_will_pay_choice[0] for who_will_pay_choice in
-                                     Item.who_will_pay_choices],
+                                     FinalizedItem.who_will_pay_choices],
             "categories": TransactionCategory.objects.all(),
             "pending_transactions": pending_transactions,
             "pending_item": pending_item

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from finance.url_paths import update_bank_transaction, update_bank_item, update_pending_transaction, \
+from finance.url_paths import update_finalized_transaction, update_finalized_item, update_pending_transaction, \
     update_pending_item, update_transaction_refunding_mapping, update_transaction_reimbursement_mapping, \
     update_transaction_repaid_mapping, update_item_refund_mapping, update_item_reimbursement_mapping, \
     update_item_repaid_mapping, update_e_transfer_internal_transfer_mapping
@@ -10,6 +10,7 @@ from finance.views.ImportFromLegacySystem import ImportFromLegacySystem
 from finance.views.ListPendingTransactions import ListPendingTransactions
 from finance.views.Mappings import Mappings
 from finance.views.NewETransferInternalTransferMapping import NewETransferInternalTransferMapping
+from finance.views.NewFinalizedItem import NewFinalizedItem
 from finance.views.NewItemRefundMapping import NewItemRefundMapping
 from finance.views.NewItemReimbursementMapping import NewItemReimbursementMapping
 from finance.views.NewItemRepaidMapping import NewItemRepaidMapping
@@ -31,7 +32,7 @@ from finance.views.ShowUnTransferredLegacyMasterCardTransactions import \
 from finance.views.ShowUncategorizedDebitCardTransactions import ShowUncategorizedDebitCardTransactions
 from finance.views.ShowUncategorizedMasterCardTransactions import ShowUncategorizedMasterCardTransactions
 from finance.views.UpdateETransferInternalTransferMapping import UpdateETransferInternalTransferMapping
-from finance.views.UpdateItem import UpdateItem
+from finance.views.UpdateFinalizedItem import UpdateFinalizedItem
 from finance.views.UpdateItemRefundMapping import UpdateItemRefundMapping
 from finance.views.UpdateItemReimbursementMapping import UpdateItemReimbursementMapping
 from finance.views.UpdateItemRepaidMapping import UpdateItemRepaidMapping
@@ -48,10 +49,10 @@ urlpatterns = [
                   path('', ShowCategorizedTransactions.as_view(), name="index"),
                   path('master_card_payment_breakdown', ShowMasterCardPaymentBreakdown.as_view(),
                        name="payment_breakdown"),
-                  path(f'{update_bank_transaction}<int:transaction_id>', UpdateTransaction.as_view(),
-                       name="update_bank_transaction"),
-                  path(f'{update_bank_item}<int:item_id>', UpdateItem.as_view(), name="update_item"),
-
+                  path(f'{update_finalized_transaction}<int:transaction_id>', UpdateTransaction.as_view(),
+                       name="update_finalized_transaction"),
+                  path("item/finalized/new", NewFinalizedItem.as_view(), name="new_finalized_item"),
+                  path(f'{update_finalized_item}<int:item_id>', UpdateFinalizedItem.as_view(), name="update_finalized_item"),
                   path('transaction/pending/new', NewPendingTransaction.as_view(), name="new_pending_transaction"),
                   path('item/pending/new', NewPendingItem.as_view(), name="new_pending_item"),
                   path('pending_transactions', ListPendingTransactions.as_view(), name="list_pending_transactions"),

@@ -1,7 +1,7 @@
 from django.db import models
 
-from finance.models.TransactionModels import TransactionCategory, Transaction, PendingTransaction
-from finance.urls import update_bank_item, update_pending_item
+from finance.models.TransactionModels import TransactionCategory, FinalizedTransaction, PendingTransaction
+from finance.urls import update_finalized_item, update_pending_item
 
 
 class ItemBase(models.Model):
@@ -50,7 +50,7 @@ class ItemBase(models.Model):
     )
 
 
-class Item(ItemBase):
+class FinalizedItem(ItemBase):
 
     def get_transactions_refunding_this_item(self):
         return [
@@ -82,17 +82,17 @@ class Item(ItemBase):
 
     @property
     def get_date(self):
-        return self.transaction.get_date
+        return self.finalized_transaction.get_date
 
     @property
     def get_month(self):
-        return self.transaction.get_month
+        return self.finalized_transaction.get_month
 
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    finalized_transaction = models.ForeignKey(FinalizedTransaction, on_delete=models.CASCADE)
 
     @property
     def get_update_link(self):
-        return f"/{update_bank_item}{self.id}"
+        return f"/{update_finalized_item}{self.id}"
 
     def __str__(self):
         return f"ID [{self.id}] name [{self.name}] price [{self.price}] purchase_target [{self.purchase_target}] who_will_pay [{self.who_will_pay}] category [{self.category}] note [{self.note}]"

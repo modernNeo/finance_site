@@ -1,5 +1,5 @@
-update_bank_transaction = 'transaction/bank/update/'
-update_bank_item = 'item/bank/update/'
+update_finalized_transaction = 'transaction/finalized/update/'
+update_finalized_item = 'item/finalized/update/'
 
 update_pending_transaction = 'transaction/pending/update/'
 update_pending_item = 'item/pending/update/'

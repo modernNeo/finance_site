@@ -4,7 +4,7 @@ import pytz
 from django.db import models
 
 from finance.url_paths import update_pending_transaction
-from finance.urls import update_bank_transaction
+from finance.urls import update_finalized_transaction
 
 
 class TransactionCategory(models.Model):
@@ -154,13 +154,13 @@ class TransactionBase(models.Model):
         super(TransactionBase, self).save(*args, **kwargs)
 
 
-class Transaction(TransactionBase):
+class FinalizedTransaction(TransactionBase):
     category = models.ForeignKey(
         TransactionCategory, on_delete=models.CASCADE, null=True
     )
 
     def is_partially_refunded(self):
-        items = self.item_set.all()
+        items = self.finalizeditem_set.all()
         items_individually_refunded = False
         for item in items:
             items_individually_refunded = items_individually_refunded or len(item.refunds_mapping_set.all())
@@ -173,7 +173,7 @@ class Transaction(TransactionBase):
         return not self.is_partially_refunded() and not self.is_fully_refunded()
 
     def is_partially_reimbursed(self):
-        items = self.item_set.all()
+        items = self.finalizeditem_set.all()
         items_individually_reimbursed = False
         for item in items:
             items_individually_reimbursed = items_individually_reimbursed or len(item.reimbursements_mapping_set.all())
@@ -249,28 +249,28 @@ class Transaction(TransactionBase):
 
     @staticmethod
     def get_uncategorized_with_memo(date, method_of_transaction, name, memo, price):
-        matching_uncategorized_bank_csv_transactions_draft = Transaction.objects.filter(
+        matching_uncategorized_finalized_transactions_draft = FinalizedTransaction.objects.filter(
             date=date, method_of_transaction=method_of_transaction, name=name, memo=memo, price=price
         )
-        matching_uncategorized_bank_csv_transactions = []
-        for matching_uncategorized_bank_csv_transaction in matching_uncategorized_bank_csv_transactions_draft:
-            if matching_uncategorized_bank_csv_transaction.category is None:
-                if len(matching_uncategorized_bank_csv_transaction.item_set.all()) == 0:
-                    matching_uncategorized_bank_csv_transactions.append(matching_uncategorized_bank_csv_transaction)
-                elif len(matching_uncategorized_bank_csv_transaction.item_set.all()) > 0:
+        matching_uncategorized_finalized_transactions = []
+        for matching_uncategorized_finalized_transaction in matching_uncategorized_finalized_transactions_draft:
+            if matching_uncategorized_finalized_transaction.category is None:
+                if len(matching_uncategorized_finalized_transaction.finalizeditem_set.all()) == 0:
+                    matching_uncategorized_finalized_transactions.append(matching_uncategorized_finalized_transaction)
+                elif len(matching_uncategorized_finalized_transaction.finalizeditem_set.all()) > 0:
                     has_category = False
-                    for item in matching_uncategorized_bank_csv_transaction.item_set.all():
+                    for item in matching_uncategorized_finalized_transaction.finalizeditem_set.all():
                         has_category = has_category or item.category is not None
                     if not has_category:
-                        matching_uncategorized_bank_csv_transactions.append(matching_uncategorized_bank_csv_transaction)
-        return matching_uncategorized_bank_csv_transactions
+                        matching_uncategorized_finalized_transactions.append(matching_uncategorized_finalized_transaction)
+        return matching_uncategorized_finalized_transactions
 
     @property
     def get_update_link(self):
-        return f"/{update_bank_transaction}{self.id}"
+        return f"/{update_finalized_transaction}{self.id}"
 
     def __str__(self):
-        return f"Transaction [{self.id}] date [{self.get_date}] payment method [{self.payment_method}] target [{self.purchase_target}] type [{self.type}] name [{self.name}] memo [{self.memo}] price [{self.price}] store [{self.store}] category [{self.category}]"
+        return f"FinalizedTransaction [{self.id}] date [{self.get_date}] payment method [{self.payment_method}] target [{self.purchase_target}] type [{self.type}] name [{self.name}] memo [{self.memo}] price [{self.price}] store [{self.store}] category [{self.category}]"
 
 
 class LegacyTransaction(TransactionBase):
@@ -302,5 +302,5 @@ class TransactionLabel(models.Model):
 
 
 class TransactionLabelIntersection(models.Model):
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    transaction = models.ForeignKey(FinalizedTransaction, on_delete=models.CASCADE)
     label = models.ForeignKey(TransactionLabel, on_delete=models.CASCADE)

@@ -4,12 +4,12 @@ import json
 from django.shortcuts import render
 from django.views import View
 
-from finance.models.TransactionModels import Transaction
+from finance.models.TransactionModels import FinalizedTransaction
 
 
 class ShowMasterCardPaymentBreakdown(View):
     def get(self, request):
-        transactions = Transaction.objects.all().filter(category__isnull=False, payment_method="MasterCard").order_by(
+        transactions = FinalizedTransaction.objects.all().filter(category__isnull=False, payment_method="MasterCard").order_by(
             '-date')
         months = list(set([transaction.get_month for transaction in transactions]))
         months.sort()
@@ -94,7 +94,7 @@ class ShowMasterCardPaymentBreakdown(View):
                             reimbursements
                         )
                 elif transaction.category.category == "Partial":
-                    for item in transaction.item_set.all():
+                    for item in transaction.finalizeditem_set.all():
                         if item.category.category == "Not My Expense":
                             # these are all other people's expenses
                             refunds = item.get_transactions_refunding_this_item()

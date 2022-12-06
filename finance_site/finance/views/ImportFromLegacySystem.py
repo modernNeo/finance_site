@@ -8,8 +8,8 @@ from django.views.generic.base import View
 from finance_site.settings import BASE_DIR
 from finance.models.GroupingModels import ItemLabelIntersection, ItemReimbursement, TransactionRefund, \
     ETransferToInternalTransferMapping, TransactionReimbursement, ItemPayBack
-from finance.models.ItemModels import ItemLabel, Item
-from finance.models.TransactionModels import TransactionCategory, TransactionLabelIntersection, Transaction, \
+from finance.models.ItemModels import ItemLabel, FinalizedItem
+from finance.models.TransactionModels import TransactionCategory, TransactionLabelIntersection, FinalizedTransaction, \
     LegacyTransaction, TransactionBase, TransactionLabel
 
 
@@ -18,7 +18,7 @@ class ImportFromLegacySystem(View):
         ItemLabelIntersection.objects.all().delete()
         ItemLabel.objects.all().delete()
         ItemReimbursement.objects.all().delete()
-        Item.objects.all().delete()
+        FinalizedItem.objects.all().delete()
 
         TransactionCategory.objects.all().delete()
         TransactionCategory.objects.bulk_create([
@@ -70,7 +70,7 @@ class ImportFromLegacySystem(View):
         TransactionReimbursement.objects.all().delete()
         TransactionLabelIntersection.objects.all().delete()
 
-        Transaction.objects.all().delete()
+        FinalizedTransaction.objects.all().delete()
         LegacyTransaction.objects.all().delete()
         TransactionBase.objects.all().delete()
 
@@ -86,7 +86,7 @@ class ImportFromLegacySystem(View):
                 except ValueError:
                     pass
                 if date is not None:
-                    Transaction(
+                    FinalizedTransaction(
                         month=date,
                         date=date,
                         payment_method="Debit Card",
@@ -106,7 +106,7 @@ class ImportFromLegacySystem(View):
                 except ValueError:
                     pass
                 if date is not None:
-                    Transaction(
+                    FinalizedTransaction(
                         month=date,
                         date=date,
                         payment_method="MasterCard",
@@ -141,14 +141,14 @@ class ImportFromLegacySystem(View):
                         price = float(legacy_transaction_detail[6].replace("$", "").replace(",", ""))
                         category_str = legacy_transaction_detail[7]
                         note = legacy_transaction_detail[8]
-                        matching_uncategorized_bank_csv_transactions = Transaction.get_uncategorized_with_memo(
+                        matching_uncategorized_finalized_transactions = FinalizedTransaction.get_uncategorized_with_memo(
                             date,
                             method_of_transaction,
                             name,
                             memo,
                             price)
                         categories = TransactionCategory.objects.all().filter(category=category_str)
-                        if len(matching_uncategorized_bank_csv_transactions) == 0:
+                        if len(matching_uncategorized_finalized_transactions) == 0:
                             LegacyTransaction(
                                 month=month,
                                 date=date,
@@ -161,25 +161,25 @@ class ImportFromLegacySystem(View):
                                 note=note
                             ).save()
                         else:
-                            matching_uncategorized_bank_csv_transaction = matching_uncategorized_bank_csv_transactions[
+                            matching_uncategorized_finalized_transaction = matching_uncategorized_finalized_transactions[
                                 0]
                             if "paypal *cineplex" in name.lower() and len(categories) != 1:
                                 if "refund" in category_str.lower():
                                     original_transaction = \
-                                        Transaction.objects.filter(name=name, price=price - (2 * price))[0]
+                                        FinalizedTransaction.objects.filter(name=name, price=price - (2 * price))[0]
                                     TransactionRefund(
                                         original_transaction=original_transaction,
-                                        refund_transaction=matching_uncategorized_bank_csv_transaction
+                                        refund_transaction=matching_uncategorized_finalized_transaction
                                     ).save()
                                     if original_transaction.category is None:
                                         raise Exception("something no good....")
-                                    matching_uncategorized_bank_csv_transaction.category = original_transaction.category
-                                    matching_uncategorized_bank_csv_transaction.note = note
-                                    matching_uncategorized_bank_csv_transaction.month = month
-                                    matching_uncategorized_bank_csv_transaction.purchase_target = original_transaction.purchase_target
-                                    matching_uncategorized_bank_csv_transaction.who_will_pay = original_transaction.who_will_pay
-                                    matching_uncategorized_bank_csv_transaction.save()
-                                    categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                    matching_uncategorized_finalized_transaction.category = original_transaction.category
+                                    matching_uncategorized_finalized_transaction.note = note
+                                    matching_uncategorized_finalized_transaction.month = month
+                                    matching_uncategorized_finalized_transaction.purchase_target = original_transaction.purchase_target
+                                    matching_uncategorized_finalized_transaction.who_will_pay = original_transaction.who_will_pay
+                                    matching_uncategorized_finalized_transaction.save()
+                                    categorized_transactions.append(matching_uncategorized_finalized_transaction)
                                 else:
                                     item_saved = False
                                     item_name = f"{name} | {category_str}"
@@ -201,22 +201,22 @@ class ImportFromLegacySystem(View):
                                         else:
                                             raise Exception(
                                                 f"Unable to determine purchase target for item [{item_name}] in transaction "
-                                                f"[{matching_uncategorized_bank_csv_transaction}]"
+                                                f"[{matching_uncategorized_finalized_transaction}]"
                                             )
                                         category = TransactionCategory.objects.all().get(category=category_str) \
                                             if purchase_target == "Me" else TransactionCategory.objects.all().get(
                                             category="Not My Expense")
-                                        item = Item(
+                                        item = FinalizedItem(
                                             name=item_name,
                                             price=price,
                                             purchase_target=purchase_target,
                                             who_will_pay=purchase_target,
                                             category=category,
-                                            transaction=matching_uncategorized_bank_csv_transaction,
+                                            finalized_transaction=matching_uncategorized_finalized_transaction,
                                             note=note
                                         )
                                         item.save()
-                                        matching_uncategorized_bank_csv_transaction.processed = True
+                                        matching_uncategorized_finalized_transaction.processed = True
                                         if purchase_target == "Mircea":
                                             ticket_bought_for_mirch = item
                                         if purchase_target == "Dawn":
@@ -226,15 +226,15 @@ class ImportFromLegacySystem(View):
                                     if not item_saved:
                                         raise Exception(
                                             f"Unable to properly save item [{item_name}] in transaction "
-                                            f"[{matching_uncategorized_bank_csv_transaction}]"
+                                            f"[{matching_uncategorized_finalized_transaction}]"
                                         )
-                                    matching_uncategorized_bank_csv_transaction.category = TransactionCategory.objects.all().get(
+                                    matching_uncategorized_finalized_transaction.category = TransactionCategory.objects.all().get(
                                         category="Partial")
-                                    matching_uncategorized_bank_csv_transaction.month = month
-                                    matching_uncategorized_bank_csv_transaction.purchase_target = "Group Purchase"
-                                    matching_uncategorized_bank_csv_transaction.who_will_pay = "Group Purchase"
-                                    matching_uncategorized_bank_csv_transaction.save()
-                                    categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                    matching_uncategorized_finalized_transaction.month = month
+                                    matching_uncategorized_finalized_transaction.purchase_target = "Group Purchase"
+                                    matching_uncategorized_finalized_transaction.who_will_pay = "Group Purchase"
+                                    matching_uncategorized_finalized_transaction.save()
+                                    categorized_transactions.append(matching_uncategorized_finalized_transaction)
                             elif "Total Payment for Spanish Lesson".lower() == category_str.lower() or "Total Payment for Spanish books".lower() == category_str.lower():
                                 item_saved = False
                                 item_name = f"{name} | {category_str}"
@@ -254,36 +254,36 @@ class ImportFromLegacySystem(View):
                                     else:
                                         raise Exception(
                                             f"Unable to determine purchase target for item [{item_name}] in transaction "
-                                            f"[{matching_uncategorized_bank_csv_transaction}]"
+                                            f"[{matching_uncategorized_finalized_transaction}]"
                                         )
                                     category = TransactionCategory.objects.all().get(category=category_str) \
                                         if purchase_target == "Me" else TransactionCategory.objects.all().get(
                                         category="Not My Expense")
-                                    item = Item(
+                                    item = FinalizedItem(
                                         name=item_name,
                                         price=price,
                                         purchase_target=purchase_target,
                                         who_will_pay=purchase_target,
                                         category=category,
-                                        transaction=matching_uncategorized_bank_csv_transaction,
+                                        finalized_transaction=matching_uncategorized_finalized_transaction,
                                         note=note
                                     )
                                     item.save()
-                                    matching_uncategorized_bank_csv_transaction.processed = True
+                                    matching_uncategorized_finalized_transaction.processed = True
                                     item_saved = True
                                     last_item += 1
                                 if not item_saved:
                                     raise Exception(
                                         f"Unable to properly save item [{item_name}] in transaction "
-                                        f"[{matching_uncategorized_bank_csv_transaction}]"
+                                        f"[{matching_uncategorized_finalized_transaction}]"
                                     )
-                                matching_uncategorized_bank_csv_transaction.category = TransactionCategory.objects.all().get(
+                                matching_uncategorized_finalized_transaction.category = TransactionCategory.objects.all().get(
                                     category="Partial")
-                                matching_uncategorized_bank_csv_transaction.month = month
-                                matching_uncategorized_bank_csv_transaction.purchase_target = "Group Purchase"
-                                matching_uncategorized_bank_csv_transaction.who_will_pay = "Group Purchase"
-                                matching_uncategorized_bank_csv_transaction.save()
-                                categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                matching_uncategorized_finalized_transaction.month = month
+                                matching_uncategorized_finalized_transaction.purchase_target = "Group Purchase"
+                                matching_uncategorized_finalized_transaction.who_will_pay = "Group Purchase"
+                                matching_uncategorized_finalized_transaction.save()
+                                categorized_transactions.append(matching_uncategorized_finalized_transaction)
                             elif "Total Payment for Leisure".lower() == category_str.lower():
                                 item_saved = False
                                 item_name = f"{name} | {category_str}"
@@ -303,36 +303,36 @@ class ImportFromLegacySystem(View):
                                     else:
                                         raise Exception(
                                             f"Unable to determine purchase target for item [{item_name}] in transaction "
-                                            f"[{matching_uncategorized_bank_csv_transaction}]"
+                                            f"[{matching_uncategorized_finalized_transaction}]"
                                         )
                                     category = TransactionCategory.objects.all().get(category=category_str) \
                                         if purchase_target == "Me" else TransactionCategory.objects.all().get(
                                         category="Not My Expense")
-                                    item = Item(
+                                    item = FinalizedItem(
                                         name=item_name,
                                         price=price,
                                         purchase_target=purchase_target,
                                         who_will_pay=purchase_target,
                                         category=category,
-                                        transaction=matching_uncategorized_bank_csv_transaction,
+                                        finalized_transaction=matching_uncategorized_finalized_transaction,
                                         note=note
                                     )
                                     item.save()
-                                    matching_uncategorized_bank_csv_transaction.processed = True
+                                    matching_uncategorized_finalized_transaction.processed = True
                                     item_saved = True
                                     last_item += 1
                                 if not item_saved:
                                     raise Exception(
                                         f"Unable to properly save item [{item_name}] in transaction "
-                                        f"[{matching_uncategorized_bank_csv_transaction}]"
+                                        f"[{matching_uncategorized_finalized_transaction}]"
                                     )
-                                matching_uncategorized_bank_csv_transaction.category = TransactionCategory.objects.all().get(
+                                matching_uncategorized_finalized_transaction.category = TransactionCategory.objects.all().get(
                                     category="Partial")
-                                matching_uncategorized_bank_csv_transaction.purchase_target = "Group Purchase"
-                                matching_uncategorized_bank_csv_transaction.who_will_pay = "Group Purchase"
-                                matching_uncategorized_bank_csv_transaction.month = month
-                                matching_uncategorized_bank_csv_transaction.save()
-                                categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                matching_uncategorized_finalized_transaction.purchase_target = "Group Purchase"
+                                matching_uncategorized_finalized_transaction.who_will_pay = "Group Purchase"
+                                matching_uncategorized_finalized_transaction.month = month
+                                matching_uncategorized_finalized_transaction.save()
+                                categorized_transactions.append(matching_uncategorized_finalized_transaction)
                             elif "Total Payment for Couple's Counselling".lower() == category_str.lower():
                                 item_saved = False
                                 item_name = f"{name} | {category_str}"
@@ -352,36 +352,36 @@ class ImportFromLegacySystem(View):
                                     else:
                                         raise Exception(
                                             f"Unable to determine purchase target for item [{item_name}] in transaction "
-                                            f"[{matching_uncategorized_bank_csv_transaction}]"
+                                            f"[{matching_uncategorized_finalized_transaction}]"
                                         )
                                     category = TransactionCategory.objects.all().get(category=category_str) \
                                         if purchase_target == "Me" else TransactionCategory.objects.all().get(
                                         category="Not My Expense")
-                                    item = Item(
+                                    item = FinalizedItem(
                                         name=item_name,
                                         price=price,
                                         purchase_target=purchase_target,
                                         who_will_pay=purchase_target,
                                         category=category,
-                                        transaction=matching_uncategorized_bank_csv_transaction,
+                                        finalized_transaction=matching_uncategorized_finalized_transaction,
                                         note=note
                                     )
                                     item.save()
-                                    matching_uncategorized_bank_csv_transaction.processed = True
+                                    matching_uncategorized_finalized_transaction.processed = True
                                     item_saved = True
                                     last_item += 1
                                 if not item_saved:
                                     raise Exception(
                                         f"Unable to properly save item [{item_name}] in transaction "
-                                        f"[{matching_uncategorized_bank_csv_transaction}]"
+                                        f"[{matching_uncategorized_finalized_transaction}]"
                                     )
-                                matching_uncategorized_bank_csv_transaction.category = TransactionCategory.objects.all().get(
+                                matching_uncategorized_finalized_transaction.category = TransactionCategory.objects.all().get(
                                     category="Partial")
-                                matching_uncategorized_bank_csv_transaction.purchase_target = "Group Purchase"
-                                matching_uncategorized_bank_csv_transaction.who_will_pay = "Group Purchase"
-                                matching_uncategorized_bank_csv_transaction.month = month
-                                matching_uncategorized_bank_csv_transaction.save()
-                                categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                matching_uncategorized_finalized_transaction.purchase_target = "Group Purchase"
+                                matching_uncategorized_finalized_transaction.who_will_pay = "Group Purchase"
+                                matching_uncategorized_finalized_transaction.month = month
+                                matching_uncategorized_finalized_transaction.save()
+                                categorized_transactions.append(matching_uncategorized_finalized_transaction)
                             elif "Team Lunch".lower() in category_str.lower():
                                 # need to add logic for processing DEBIT deposits for reimbursements
                                 item_saved = False
@@ -404,40 +404,40 @@ class ImportFromLegacySystem(View):
                                     else:
                                         raise Exception(
                                             f"Unable to determine purchase target for item [{item_name}] in transaction "
-                                            f"[{matching_uncategorized_bank_csv_transaction}]"
+                                            f"[{matching_uncategorized_finalized_transaction}]"
                                         )
                                     category = TransactionCategory.objects.all().get(category=category_str) \
                                         if who_will_pay == "Me" else TransactionCategory.objects.all().get(
                                         category="Not My Expense")
                                     purchase_target = "Me" if who_will_pay != "Dawn" else who_will_pay
-                                    item = Item(
+                                    item = FinalizedItem(
                                         name=item_name,
                                         price=price,
                                         who_will_pay=who_will_pay,
                                         purchase_target=purchase_target,
                                         category=category,
-                                        transaction=matching_uncategorized_bank_csv_transaction,
+                                        finalized_transaction=matching_uncategorized_finalized_transaction,
                                         note=note
                                     )
                                     item.save()
-                                    matching_uncategorized_bank_csv_transaction.processed = True
+                                    matching_uncategorized_finalized_transaction.processed = True
                                     item_saved = True
                                     last_item += 1
                                 if not item_saved:
                                     raise Exception(
                                         f"Unable to properly save item [{item_name}] in transaction "
-                                        f"[{matching_uncategorized_bank_csv_transaction}]"
+                                        f"[{matching_uncategorized_finalized_transaction}]"
                                     )
-                                matching_uncategorized_bank_csv_transaction.category = TransactionCategory.objects.all().get(
+                                matching_uncategorized_finalized_transaction.category = TransactionCategory.objects.all().get(
                                     category="Partial")
-                                matching_uncategorized_bank_csv_transaction.purchase_target = "Group Purchase"
-                                matching_uncategorized_bank_csv_transaction.who_will_pay = "Group Purchase"
-                                matching_uncategorized_bank_csv_transaction.month = month
-                                matching_uncategorized_bank_csv_transaction.save()
-                                categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                matching_uncategorized_finalized_transaction.purchase_target = "Group Purchase"
+                                matching_uncategorized_finalized_transaction.who_will_pay = "Group Purchase"
+                                matching_uncategorized_finalized_transaction.month = month
+                                matching_uncategorized_finalized_transaction.save()
+                                categorized_transactions.append(matching_uncategorized_finalized_transaction)
                             elif "Refund".lower() in category_str.lower():
                                 original_transactions = \
-                                    Transaction.objects.filter(
+                                    FinalizedTransaction.objects.filter(
                                         name=name, price=price - (2 * price),
                                     )
                                 original_tran = None
@@ -448,14 +448,14 @@ class ImportFromLegacySystem(View):
                                     raise Exception("Could not find the original transaction to refund")
                                 TransactionRefund(
                                     original_transaction=original_tran,
-                                    refund_transaction=matching_uncategorized_bank_csv_transaction
+                                    refund_transaction=matching_uncategorized_finalized_transaction
                                 ).save()
-                                matching_uncategorized_bank_csv_transaction.category = original_transaction.category
-                                matching_uncategorized_bank_csv_transaction.purchase_target = original_transaction.purchase_target
-                                matching_uncategorized_bank_csv_transaction.who_will_pay = original_transaction.who_will_pay
-                                matching_uncategorized_bank_csv_transaction.month = month
-                                matching_uncategorized_bank_csv_transaction.save()
-                                categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                matching_uncategorized_finalized_transaction.category = original_transaction.category
+                                matching_uncategorized_finalized_transaction.purchase_target = original_transaction.purchase_target
+                                matching_uncategorized_finalized_transaction.who_will_pay = original_transaction.who_will_pay
+                                matching_uncategorized_finalized_transaction.month = month
+                                matching_uncategorized_finalized_transaction.save()
+                                categorized_transactions.append(matching_uncategorized_finalized_transaction)
                             else:
                                 if name.lower() == "PAYMENT - THANK YOU".lower():
                                     category_str = "Mastercard Payment"
@@ -465,49 +465,49 @@ class ImportFromLegacySystem(View):
                                     categories = TransactionCategory.objects.all().filter(category=category_str)
                                     home_office_item = csvFile[i - 1]
                                     online_purchase = csvFile[i - 2]
-                                    Item(
-                                        name=matching_uncategorized_bank_csv_transaction.name,
+                                    FinalizedItem(
+                                        name=matching_uncategorized_finalized_transaction.name,
                                         price=float(home_office_item[6].replace("$", "")),
                                         who_will_pay="Me",
                                         purchase_target="Me",
                                         category=TransactionCategory.objects.all().filter(category=home_office_item[7])[0],
-                                        transaction=matching_uncategorized_bank_csv_transaction,
+                                        finalized_transaction=matching_uncategorized_finalized_transaction,
                                     ).save()
-                                    Item(
-                                        name=matching_uncategorized_bank_csv_transaction.name,
+                                    FinalizedItem(
+                                        name=matching_uncategorized_finalized_transaction.name,
                                         price=float(online_purchase[6].replace("$", "")),
                                         who_will_pay="Me",
                                         purchase_target="Me",
                                         category=TransactionCategory.objects.all().filter(category=online_purchase[7])[0],
-                                        transaction=matching_uncategorized_bank_csv_transaction,
+                                        finalized_transaction=matching_uncategorized_finalized_transaction,
                                     ).save()
                                 elif category_str.lower() == "Not My Expense".lower():
                                     categories = TransactionCategory.objects.all().filter(category=category_str)
                                     if note.lower() == "Dawn paid for item for me".lower():
-                                        matching_uncategorized_bank_csv_transaction.who_will_pay = 'Dawn'
+                                        matching_uncategorized_finalized_transaction.who_will_pay = 'Dawn'
                                     elif note.lower() == "bought something for Dawn and she paid back".lower():
-                                        matching_uncategorized_bank_csv_transaction.purchase_target = "Dawn"
-                                        matching_uncategorized_bank_csv_transaction.who_will_pay = "Dawn"
+                                        matching_uncategorized_finalized_transaction.purchase_target = "Dawn"
+                                        matching_uncategorized_finalized_transaction.who_will_pay = "Dawn"
                                     elif note.lower() == "Dawn’s session with Melanie that got charged to me [paid on 2022-10-02]".lower():
-                                        matching_uncategorized_bank_csv_transaction.purchase_target = 'Dawn'
-                                        matching_uncategorized_bank_csv_transaction.who_will_pay = 'Dawn'
+                                        matching_uncategorized_finalized_transaction.purchase_target = 'Dawn'
+                                        matching_uncategorized_finalized_transaction.who_will_pay = 'Dawn'
                                     elif "michael" in note.lower():
-                                        matching_uncategorized_bank_csv_transaction.who_will_pay = 'Micheal'
+                                        matching_uncategorized_finalized_transaction.who_will_pay = 'Micheal'
                                     elif 'dawn' in note.lower():
-                                        matching_uncategorized_bank_csv_transaction.purchase_target = 'Dawn'
-                                        matching_uncategorized_bank_csv_transaction.who_will_pay = 'Dawn'
-                                    matching_uncategorized_bank_csv_transaction.save()
+                                        matching_uncategorized_finalized_transaction.purchase_target = 'Dawn'
+                                        matching_uncategorized_finalized_transaction.who_will_pay = 'Dawn'
+                                    matching_uncategorized_finalized_transaction.save()
                                 if len(categories) == 0:
                                     print(legacy_transaction_detail)
                                     raise Exception(f"Invalid category of [{category_str}] detected in [{date}]")
                                 else:
                                     category = categories[0]
-                                matching_uncategorized_bank_csv_transaction.category = category
-                                matching_uncategorized_bank_csv_transaction.note = note
-                                matching_uncategorized_bank_csv_transaction.month = month
-                                matching_uncategorized_bank_csv_transaction.save()
-                                matching_uncategorized_bank_csv_transaction.processed = True
-                                categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                matching_uncategorized_finalized_transaction.category = category
+                                matching_uncategorized_finalized_transaction.note = note
+                                matching_uncategorized_finalized_transaction.month = month
+                                matching_uncategorized_finalized_transaction.save()
+                                matching_uncategorized_finalized_transaction.processed = True
+                                categorized_transactions.append(matching_uncategorized_finalized_transaction)
                 elif legacy_transaction_detail[2].lower() == "DEBIT".lower():
                     date = None
                     try:
@@ -525,21 +525,21 @@ class ImportFromLegacySystem(View):
                         price = float(legacy_transaction_detail[6].replace("$", "").replace(",", ""))
                         category_str = legacy_transaction_detail[7]
                         note = legacy_transaction_detail[8]
-                        matching_uncategorized_bank_csv_transactions = Transaction.get_uncategorized_with_memo(
+                        matching_uncategorized_finalized_transactions = FinalizedTransaction.get_uncategorized_with_memo(
                             date,
                             method_of_transaction,
                             name,
                             memo,
                             price)
-                        if len(matching_uncategorized_bank_csv_transactions) == 0:
-                            matching_uncategorized_bank_csv_transactions = Transaction.get_uncategorized_with_memo(
+                        if len(matching_uncategorized_finalized_transactions) == 0:
+                            matching_uncategorized_finalized_transactions = FinalizedTransaction.get_uncategorized_with_memo(
                                 date,
                                 method_of_transaction,
                                 name,
                                 memo,
                                 abs(price))
                         if category_str in ["Dawn reimbursement", "Mirchero reimbursement"]:
-                            if len(matching_uncategorized_bank_csv_transactions) == 0:
+                            if len(matching_uncategorized_finalized_transactions) == 0:
                                 LegacyTransaction(
                                     month=month,
                                     date=date,
@@ -552,7 +552,7 @@ class ImportFromLegacySystem(View):
                                     note=note
                                 ).save()
                             else:
-                                matching_uncategorized_bank_csv_transaction = matching_uncategorized_bank_csv_transactions[0]
+                                matching_uncategorized_finalized_transaction = matching_uncategorized_finalized_transactions[0]
                                 if category_str == "Dawn reimbursement":
                                     ticket = ticket_bought_for_dawn
                                     ticket_bought_for_dawn = None
@@ -566,32 +566,32 @@ class ImportFromLegacySystem(View):
                                             f"mirchea reimbursement is {price} but ticket was {ticket.price}")
                                 ItemPayBack(
                                     original_item=ticket,
-                                    payback_transaction = matching_uncategorized_bank_csv_transaction,
+                                    payback_transaction = matching_uncategorized_finalized_transaction,
                                     note=ticket.category
                                 ).save()
-                                matching_uncategorized_bank_csv_transaction.category = ticket.category
+                                matching_uncategorized_finalized_transaction.category = ticket.category
                                 del ticket
-                                matching_uncategorized_bank_csv_transaction.month = month
-                                matching_uncategorized_bank_csv_transaction.save()
-                                categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                matching_uncategorized_finalized_transaction.month = month
+                                matching_uncategorized_finalized_transaction.save()
+                                categorized_transactions.append(matching_uncategorized_finalized_transaction)
                         elif "transfer_below-" in category_str:
-                            matching_uncategorized_bank_csv_transaction = matching_uncategorized_bank_csv_transactions[
+                            matching_uncategorized_finalized_transaction = matching_uncategorized_finalized_transactions[
                                 0]
                             last_x_trans_length = int(category_str.split("-")[1])
                             relevant_transactions = categorized_transactions[-last_x_trans_length:]
                             for relevant_transaction in relevant_transactions:
                                 ETransferToInternalTransferMapping(
-                                    e_transfer=matching_uncategorized_bank_csv_transaction,
+                                    e_transfer=matching_uncategorized_finalized_transaction,
                                     internal_transfer=relevant_transaction
                                 ).save()
-                            matching_uncategorized_bank_csv_transaction.category = TransactionCategory.objects.all().get(
+                            matching_uncategorized_finalized_transaction.category = TransactionCategory.objects.all().get(
                                 category="Categorized Elsewhere")
-                            matching_uncategorized_bank_csv_transaction.month = month
-                            matching_uncategorized_bank_csv_transaction.save()
-                            categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                            matching_uncategorized_finalized_transaction.month = month
+                            matching_uncategorized_finalized_transaction.save()
+                            categorized_transactions.append(matching_uncategorized_finalized_transaction)
                         else:
                             categories = TransactionCategory.objects.all().filter(category=category_str)
-                            if len(matching_uncategorized_bank_csv_transactions) == 0:
+                            if len(matching_uncategorized_finalized_transactions) == 0:
                                 LegacyTransaction(
                                     month=month,
                                     date=date,
@@ -604,18 +604,18 @@ class ImportFromLegacySystem(View):
                                     note=note
                                 ).save()
                             else:
-                                matching_uncategorized_bank_csv_transaction = \
-                                matching_uncategorized_bank_csv_transactions[0]
+                                matching_uncategorized_finalized_transaction = \
+                                matching_uncategorized_finalized_transactions[0]
                                 if len(categories) == 0:
                                     print(legacy_transaction_detail)
                                     raise Exception(f"Invalid category of [{category_str}] detected in [{date}]")
                                 else:
                                     category = categories[0]
-                                matching_uncategorized_bank_csv_transaction.category = category
-                                matching_uncategorized_bank_csv_transaction.month = month
-                                matching_uncategorized_bank_csv_transaction.note = note
-                                matching_uncategorized_bank_csv_transaction.save()
-                                categorized_transactions.append(matching_uncategorized_bank_csv_transaction)
+                                matching_uncategorized_finalized_transaction.category = category
+                                matching_uncategorized_finalized_transaction.month = month
+                                matching_uncategorized_finalized_transaction.note = note
+                                matching_uncategorized_finalized_transaction.save()
+                                categorized_transactions.append(matching_uncategorized_finalized_transaction)
                 i += 1
         print("Import from legacy system complete :)")
         return HttpResponseRedirect("/")

@@ -2,21 +2,14 @@
 <form method="post" action="" enctype="multipart/form-data">
     <br><br>
     {%  csrf_token %}
-    <button type="submit">Update Linked Item</button>
-    <br><br><b>Month: </b><input type="date" name="month" value="{{ item.transaction.get_front_end_month }}">
-    <br><br><b>Date: </b><input type="date" name="date" value="{{ item.transaction.get_front_end_date }}">
-    <br><br><b>Payment Method: </b>
-        <select name="payment_method">
-            {%  for payment_method_choice in payment_method_choices %}
-                {%  if payment_method_choice == item.payment_method %}
-                    <option selected value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
-                {%  else %}
-                    <option value="{{ payment_method_choice }}">{{ payment_method_choice }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
+    <button type="submit" name="action" value="update_item">Create or Update Finalized Item</button>
+    <button type="submit" name="action" value="delete_item">Delete Item</button>
+    <p>Linked Transaction: {{ item.finalized_transaction }}</p>
+    <br><br><b>Month: </b>{{ item.finalized_transaction.get_front_end_month }}
+    <br><br><b>Date: </b>{{ item.finalized_transaction.get_front_end_date }}
+    <br><br><b>Payment Method: </b>{{ item.payment_method }}
     <br><br><b>Purchase Target: </b>
-        <select name="purchase_target_choice">
+        <select name="purchase_target">
             {%  for purchase_target_choice in purchase_target_choices %}
                 {%  if purchase_target_choice == item.purchase_target %}
                     <option selected value="{{ purchase_target_choice }}">{{ purchase_target_choice }}</option>
@@ -26,7 +19,7 @@
             {% endfor %}
         </select>
     <br><br><b>Who Will Pay: </b>
-        <select name="who_will_pay_choice">
+        <select name="who_will_pay">
             {%  for who_will_pay_choice in who_will_pay_choices %}
                 {%  if who_will_pay_choice == item.who_will_pay %}
                     <option selected value="{{ who_will_pay_choice }}">{{ who_will_pay_choice }}</option>
@@ -35,10 +28,9 @@
                 {% endif %}
             {% endfor %}
         </select>
-    <br><br><b>Name: </b>{{ item.name }}
-    <br><br><b>Price: </b>{{ item.formatted_price }}
+    <br><br><b>Name: </b><input type="text" name="name" value="{{ item.name }}">
+    <br><br><b>Price: </b><input type="number" step="any" name="price" value="{{ item.price }}">
     <br><br><b>Store: </b> <input type="text" name="store" value="{{ item.store }}">
-    <br><br><b>Receipt: <input type="file" name="receipt"></b>
     <br><br><b>Note: </b><input type="text" name="note" value="{{ item.note }}">
     <br><br><b>Processed: </b><input type="checkbox" name="processed" {%  if item.processed %} checked {%  endif %}> {{ item.processed }}
     <br><br><b>Category: </b>
