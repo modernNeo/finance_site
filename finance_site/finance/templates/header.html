@@ -19,7 +19,6 @@ table, th, td {
         <th colspan="2">All Finalized Transactions</th>
 
         <th colspan="2">Upload Bank CSVs</th>
-        <th rowspan="2">{%  if current_page == "create_finalized_item" %}Create Finalized Item{%  else %}<a href="/item/finalized/new">Create Finalized Item</a> {% endif %}</th>
     </tr>
     <tr>
         <th>{%  if current_page == "categorized_master_card" %}MasterCard{%  else %}<a href="/master_card/categorized">MasterCard</a> {% endif %} </th>
@@ -33,30 +32,14 @@ table, th, td {
         <th>{%  if current_page == "upload_master_card_csv" %}MasterCard{%  else %}<a href="/csv/upload/master_card">MasterCard</a> {% endif %} </th>
         <th>{%  if current_page == "upload_debit_card_csv" %}Debit Card{%  else %}<a href="/csv/upload/debit_card">Debit Card</a> {% endif %}</th>
     </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
+    <tr><td style="background-color: black" colspan="9">-</td></tr>
     <tr>
         <th>{%  if current_page == "payment_breakdown" %}MasterCard Payment Breakdown{%  else %}<a href="/master_card_payment_breakdown">MasterCard Payment Breakdown</a> {% endif %}</th>
         <th>{%  if current_page == "mappings" %}Mappings{%  else %}<a href="/mappings">Mappings</a> {% endif %}</th>
         <th>{%  if current_page == "not_reimbursed" %}Awaiting Repayments{%  else %}<a href="/awaiting_payment">Awaiting Repayments</a> {% endif %}</th>
         <th colspan="7">{%  if current_page == "data_is_beautiful" %}r/DataIsBeautiful{%  else %}<a href="/r/data_is_beautiful">r/DataIsBeautiful</a> {% endif %}</th>
     </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
+    <tr><td style="background-color: black" colspan="9">-</td></tr>
     <tr>
         <th rowspan="2" colspan="5">{%  if current_page == "pending" %}Pending Transactions/Items{%  else %}<a href="/pending_transactions">Pending Transactions/Items</a> {% endif %}</th>
         <th colspan="5">Create Pending</th>
@@ -66,15 +49,7 @@ table, th, td {
         <th colspan="2">{%  if current_page == "create_pending_transaction" %}Transaction{%  else %}<a href="/transaction/pending/new">Transaction</a> {% endif %}</th>
         <th colspan="3">{%  if current_page == "create_pending_item" %}Item{%  else %}<a href="/item/pending/new">Item</a> {% endif %}</th>
     </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
+    <tr><td style="background-color: black" colspan="9">-</td></tr>
     <tr>
 
         <th colspan="3">Un-Transferred</th>
