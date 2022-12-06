@@ -2,6 +2,7 @@ import csv
 import datetime
 
 import pytz
+from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render
 from django.views import View
@@ -23,7 +24,8 @@ class UploadDebitCardTransaction(View):
             file_name = fs.save(receipt.name, receipt)
             print(receipt)
             print(file_name)
-            with open(file_name, 'r') as debit_card_csv:
+            file_name_and_path = f"{settings.MEDIA_ROOT}/{file_name}"
+            with open(file_name_and_path, 'r') as debit_card_csv:
                 csvFile = csv.reader(debit_card_csv)
                 for line in csvFile:
                     date = None
