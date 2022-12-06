@@ -1,0 +1,18 @@
+{%  include 'header.html' %}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Category</th>
+        <th>Starred</th>
+        <th>Order Number</th>
+    </tr>
+    {%  for category in  categories %}
+        <tr>
+            <td><a target="_blank" href="{{ category.get_update_link }}">{{ category.id }}</a></td>
+            <td>{{ category.category }}</td>
+            <td>{{ category.starred }}</td>
+            <td>{{ category.order_number }}</td>
+        </tr>
+    {%  endfor %}
+
+</table>

@@ -1,0 +1,13 @@
+{%  include 'header.html' %}
+<form method="post">
+    {%  csrf_token %}
+    <button type="submit">Create or Update Category</button>
+    <br><br><b>Category: </b><input type="text" name="category" value="{{ transaction_category.category }}" >
+    <br><br><b>Starred: </b>
+    {%  if transaction_category.starred %}
+        <input type="checkbox" name="starred" checked>
+    {%  else %}
+        <input type="checkbox" name="starred" >
+    {%  endif %}
+    <br><br><b>Order: </b><input type="number" name="order_number" value="{{ transaction_category.order_number }}">
+</form>

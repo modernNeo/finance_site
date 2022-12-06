@@ -29,7 +29,7 @@ class UpdateTransaction(View):
                                         TransactionBase.purchase_target_choices],
             "who_will_pay_choices": [who_will_pay_choice[0] for who_will_pay_choice in
                                      FinalizedTransaction.who_will_pay_choices],
-            "categories": TransactionCategory.objects.all(),
+            "categories": TransactionCategory.objects.all().order_by('order_number'),
             "transactions_refunding_this_transaction": transactions_refunding_this_transaction,
             "transactions_this_transaction_refunds": transactions_this_transaction_refunds,
             "corresponding_internal_transfers": corresponding_internal_transfers,

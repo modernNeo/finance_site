@@ -5,8 +5,10 @@ from django.urls import path
 from finance.url_paths import update_finalized_transaction, update_finalized_item, update_pending_transaction, \
     update_pending_item, update_transaction_refunding_mapping, update_transaction_reimbursement_mapping, \
     update_transaction_repaid_mapping, update_item_refund_mapping, update_item_reimbursement_mapping, \
-    update_item_repaid_mapping, update_e_transfer_internal_transfer_mapping
+    update_item_repaid_mapping, update_e_transfer_internal_transfer_mapping, update_category
+from finance.views.AddCategory import AddCategory
 from finance.views.ImportFromLegacySystem import ImportFromLegacySystem
+from finance.views.ListCategories import ListCategories
 from finance.views.ListPendingTransactions import ListPendingTransactions
 from finance.views.Mappings import Mappings
 from finance.views.NewETransferInternalTransferMapping import NewETransferInternalTransferMapping
@@ -31,6 +33,7 @@ from finance.views.ShowUnTransferredLegacyMasterCardTransactions import \
     ShowUnTransferredLegacyMasterCardTransactions
 from finance.views.ShowUncategorizedDebitCardTransactions import ShowUncategorizedDebitCardTransactions
 from finance.views.ShowUncategorizedMasterCardTransactions import ShowUncategorizedMasterCardTransactions
+from finance.views.UpdateCategory import UpdateCategory
 from finance.views.UpdateETransferInternalTransferMapping import UpdateETransferInternalTransferMapping
 from finance.views.UpdateFinalizedItem import UpdateFinalizedItem
 from finance.views.UpdateItemRefundMapping import UpdateItemRefundMapping
@@ -60,7 +63,9 @@ urlpatterns = [
                        name="update_pending_transaction"),
                   path(f'{update_pending_item}<int:pending_item_id>', UpdatePendingItem.as_view(),
                        name="update_pending_item"),
-
+                  path('category/add', AddCategory.as_view(), name="add_category"),
+                  path(f"{update_category}<int:category_id>", UpdateCategory.as_view(), name="update_category"),
+                  path("categories", ListCategories.as_view(), name="list_categories"),
                   path('mappings', Mappings.as_view(), name="mappings"),
                   path(
                       'mapping/refund/transaction/new',

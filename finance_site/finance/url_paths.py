@@ -16,3 +16,5 @@ update_item_reimbursement_mapping = 'mapping/reimbursement/item/update/'
 update_item_repaid_mapping = 'mapping/repaid/item/update/'
 
 update_e_transfer_internal_transfer_mapping = 'mapping/e_transfer_internal_transfer_mapping/update/'
+
+update_category = 'category/update/'

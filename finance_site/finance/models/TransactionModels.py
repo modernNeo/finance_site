@@ -3,7 +3,7 @@ import datetime
 import pytz
 from django.db import models
 
-from finance.url_paths import update_pending_transaction
+from finance.url_paths import update_pending_transaction, update_category
 from finance.urls import update_finalized_transaction
 
 
@@ -12,6 +12,20 @@ class TransactionCategory(models.Model):
         max_length=300,
         unique=True
     )
+
+    starred = models.BooleanField(
+        default=False
+    )
+
+    order_number = models.IntegerField(
+        unique=True,
+        default=None,
+        null=True
+    )
+
+    @property
+    def get_update_link(self):
+        return f"/{update_category}{self.id}"
 
     def __str__(self):
         return self.category

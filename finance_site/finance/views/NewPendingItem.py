@@ -15,7 +15,7 @@ class NewPendingItem(View):
                                         ItemBase.purchase_target_choices],
             "who_will_pay_choices": [who_will_pay_choice[0] for who_will_pay_choice in
                                      ItemBase.who_will_pay_choices],
-            "categories": TransactionCategory.objects.all(),
+            "categories": TransactionCategory.objects.all().order_by('order_number'),
             "pending_transactions": pending_transactions
         })
 

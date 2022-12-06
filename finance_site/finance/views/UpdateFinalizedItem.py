@@ -17,7 +17,7 @@ class UpdateFinalizedItem(View):
                                         TransactionBase.purchase_target_choices],
             "who_will_pay_choices": [who_will_pay_choice[0] for who_will_pay_choice in
                                      FinalizedItem.who_will_pay_choices],
-            "categories": TransactionCategory.objects.all(),
+            "categories": TransactionCategory.objects.all().order_by('order_number'),
             "transactions_refunding_item": item.get_transactions_refunding_this_item(),
             "transactions_reimbursing_item": item.get_transactions_reimbursing_this_item(),
             "transactions_paying_back_item": item.get_transaction_paying_back_this_item(),

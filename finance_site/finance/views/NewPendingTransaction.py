@@ -16,7 +16,7 @@ class NewPendingTransaction(View):
                 "payment_method_choices": [payment_choice[0] for payment_choice in TransactionBase.payment_method_choices],
                 "purchase_target_choices": [purchase_target_choice[0] for purchase_target_choice in TransactionBase.purchase_target_choices],
                 "who_will_pay_choices": [who_will_pay_choice[0] for who_will_pay_choice in FinalizedTransaction.who_will_pay_choices],
-                "categories": TransactionCategory.objects.all()
+                "categories": TransactionCategory.objects.all().order_by('order_number')
             }
         )
 
