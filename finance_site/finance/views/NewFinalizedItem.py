@@ -8,7 +8,7 @@ from finance.models.TransactionModels import FinalizedTransaction, TransactionCa
 
 class NewFinalizedItem(View):
     def get(self, request):
-        transaction_id = request.POST.get("transaction_id", None)
+        transaction_id = request.GET.get("transaction_id", None)
         finalized_transaction = FinalizedTransaction.objects.get(id=transaction_id) if transaction_id is not None else None
         return render(request, 'create_or_update_finalized_item.html', context={
             "current_page": "create_finalized_item",
@@ -29,7 +29,7 @@ class NewFinalizedItem(View):
             who_will_pay=request.POST['who_will_pay'],
             category=TransactionCategory.objects.get(id=request.POST['category']),
             note=request.POST['note'],
-            finalized_transaction=FinalizedTransaction.objects.get(id=request.POST['finalized_transaction']),
+            finalized_transaction=FinalizedTransaction.objects.get(id=request.GET['transaction_id']),
         )
         finalized_item.save()
         return HttpResponseRedirect(finalized_item.get_update_link)
