@@ -37,7 +37,7 @@ class UploadDebitCardTransaction(View):
                         FinalizedTransaction(
                             month=date,
                             date=date,
-                            payment_method="MasterCard",
+                            payment_method="Debit Card",
                             method_of_transaction=line[1],
                             name=line[2],
                             memo=line[3],
