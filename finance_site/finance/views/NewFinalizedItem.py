@@ -8,7 +8,7 @@ from finance.models.TransactionModels import FinalizedTransaction, TransactionCa
 
 class NewFinalizedItem(View):
     def get(self, request):
-        transaction_id = request.POST.get("transaction_id", None)
+        transaction_id = request.GET.get("transaction_id", None)
         if transaction_id is None:
             return HttpResponseRedirect("/")
         return render(request, 'create_or_update_finalized_item.html', context={
@@ -23,6 +23,9 @@ class NewFinalizedItem(View):
         })
 
     def post(self, request):
+        transaction_id = request.GET.get("transaction_id", None)
+        if transaction_id is None:
+            return HttpResponseRedirect("/")
         finalized_item = FinalizedItem(
             name=request.POST['name'],
             price=request.POST['price'],
