@@ -86,8 +86,8 @@
                 <td><a target="_blank" href="{{ transaction_paid_back_mapping.get_update_link }}">{{ transaction_paid_back_mapping.id }}</a></td>
                 <td>
                     <p>
-                        ID: {{ transaction_paid_back_mapping.original_transaction.transaction.id }}<br>
-                        Date: {{ transaction_paid_back_mapping.original_transaction.transaction.get_front_end_date }}<br>
+                        ID: {{ transaction_paid_back_mapping.original_transaction.id }}<br>
+                        Date: {{ transaction_paid_back_mapping.original_transaction.get_front_end_date }}<br>
                         Name: {{ transaction_paid_back_mapping.original_transaction.name }}<br>
                         Price: {{ transaction_paid_back_mapping.original_transaction.formatted_price }}<br>
                         <a target="_blank" href="{{ transaction_paid_back_mapping.original_transaction.get_update_link }}">Edit</a>
@@ -127,8 +127,8 @@
                 <td><a target="_blank" href="{{ item_refund_mapping.get_update_link }}">{{ item_refund_mapping.id }}</a></td>
                 <td>
                     <p>
-                        ID: {{ item_refund_mapping.original_item.transaction.id }}<br>
-                        Date: {{ item_refund_mapping.original_item.transaction.get_front_end_date }}<br>
+                        ID: {{ item_refund_mapping.original_item.id }}<br>
+                        Date: {{ item_refund_mapping.original_item.get_front_end_date }}<br>
                         Name: {{ item_refund_mapping.original_item.name }}<br>
                         Price: {{ item_refund_mapping.original_item.formatted_price }}<br>
                         <a target="_blank" href="{{ item_refund_mapping.get_update_link }}">Edit</a>
@@ -164,8 +164,8 @@
                 <td><a target="_blank" href="{{ item_reimbursement_mapping.get_update_link }}">{{ item_reimbursement_mapping.id }}</a></td>
                 <td>
                     <p>
-                        ID: {{ item_reimbursement_mapping.original_transaction.transaction.id }}<br>
-                        Date: {{ item_reimbursement_mapping.original_transaction.transaction.get_front_end_date }}<br>
+                        ID: {{ item_reimbursement_mapping.original_transaction.id }}<br>
+                        Date: {{ item_reimbursement_mapping.original_transaction.get_front_end_date }}<br>
                         Name: {{ item_reimbursement_mapping.original_transaction.name }}<br>
                         Price: {{ item_reimbursement_mapping.original_transaction.formatted_price }}<br>
                         <a target="_blank" href="{{ item_reimbursement_mapping.original_transaction.get_update_link.id }}">Edit</a>
@@ -202,7 +202,7 @@
                 <td>
                     <p>
                         ID: {{ item_paid_back_mapping.original_item.id }}<br>
-                        Date: {{ item_paid_back_mapping.original_item.transaction.get_front_end_date }}<br>
+                        Date: {{ item_paid_back_mapping.original_item.get_front_end_date }}<br>
                         Name: {{ item_paid_back_mapping.original_item.name }}<br>
                         Price: {{ item_paid_back_mapping.original_item.formatted_price }}<br>
                         Note: {{ item_paid_back_mapping.original_item.note }}<br>
