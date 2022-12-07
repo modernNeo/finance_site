@@ -39,7 +39,7 @@ class TransactionBase(models.Model):
 
     @property
     def get_month(self):
-        return self.month.strftime("%Y-%m")
+        return self.month.strftime("%Y-%m") if self.month is not None else "None"
 
     @property
     def get_front_end_month(self):
