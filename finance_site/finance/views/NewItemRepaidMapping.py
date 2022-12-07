@@ -11,8 +11,14 @@ from finance.models.TransactionModels import FinalizedTransaction
 class NewItemRepaidMapping(View):
 
     def get(self, request):
-        charges = FinalizedItem.objects.all().filter(transaction__payment_method__in=["MasterCard", "Debit Card"], price__lt=0)
-        refunds = FinalizedTransaction.objects.all().filter(payment_method__in=["MasterCard", "Debit Card"], price__gt=0).order_by('-date')
+        charges = FinalizedItem.objects.all().filter(
+            finalized_transaction__payment_method__in=["MasterCard", "Debit Card"],
+            price__lt=0
+        )
+        refunds = FinalizedTransaction.objects.all().filter(
+            finalized_transaction__payment_method__in=["MasterCard", "Debit Card"],
+            price__gt=0
+        ).order_by('-date')
         return render(
             request, 'create_or_update_item_paid_back_mapping.html', context=
             {
