@@ -9,8 +9,11 @@ from finance.models.TransactionModels import FinalizedTransaction
 
 class ShowMasterCardPaymentBreakdown(View):
     def get(self, request):
-        transactions = FinalizedTransaction.objects.all().filter(category__isnull=False, payment_method="MasterCard").order_by(
-            '-date')
+        transactions = FinalizedTransaction.objects.all().filter(
+            category__isnull=False, payment_method="MasterCard"
+        ).order_by(
+            '-date', 'category__order_number'
+        )
         months = list(set([transaction.get_month for transaction in transactions]))
         months.sort()
         months = list(reversed(months))
