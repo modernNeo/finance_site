@@ -16,7 +16,7 @@ class NewItemRepaidMapping(View):
             price__lt=0
         )
         refunds = FinalizedTransaction.objects.all().filter(
-            finalized_transaction__payment_method__in=["MasterCard", "Debit Card"],
+            payment_method__in=["MasterCard", "Debit Card"],
             price__gt=0
         ).order_by('-date')
         return render(
