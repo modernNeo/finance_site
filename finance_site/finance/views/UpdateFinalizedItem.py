@@ -32,7 +32,7 @@ class UpdateFinalizedItem(View):
             item.price = request.POST['price']
             item.purchase_target = request.POST['purchase_target']
             item.who_will_pay = request.POST['who_will_pay']
-            item.category = TransactionCategory.objects.get(id=request.POST['category']),
+            item.category = TransactionCategory.objects.get(id=request.POST['category'])
             item.note = request.POST['note']
             item.save()
             return HttpResponseRedirect(item.get_update_link)
