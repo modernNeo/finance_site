@@ -88,6 +88,11 @@ class FinalizedItem(ItemBase):
     def get_month(self):
         return self.finalized_transaction.get_month
 
+
+    @property
+    def get_front_end_date(self):
+        return self.finalized_transaction.get_front_end_date
+
     finalized_transaction = models.ForeignKey(FinalizedTransaction, on_delete=models.CASCADE)
 
     @property
