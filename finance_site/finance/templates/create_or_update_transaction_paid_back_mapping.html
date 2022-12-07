@@ -20,7 +20,7 @@
     <select name="payback_transaction">
         <option value="None">None</option>
         {%  for refund in refunds %}
-            {%  if transaction_repaid_mapping.refund_transaction.id == refund.id %}
+            {%  if transaction_repaid_mapping.payback_transaction.id == refund.id %}
                 <option selected value="{{ refund.id }}">{{ refund.get_date }} | {{ refund.payment_method }} | {{ refund.purchase_target }} | {{ refund.who_will_pay }} | {{ refund.type }} | {{ refund.name }} | {{ refund.formatted_price }} | {{ refund.note }}</option>
             {%  else %}
                 <option value="{{ refund.id }}">{{ refund.get_date }} | {{ refund.payment_method }} | {{ refund.purchase_target }} | {{ refund.who_will_pay }} | {{ refund.type }} | {{ refund.name }} | {{ refund.formatted_price }} | {{ refund.note }}</option>
