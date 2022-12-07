@@ -54,12 +54,13 @@ table, th, td {
     <tr><td style="background-color: black" colspan="9">-</td></tr>
     <tr>
 
-        <th colspan="3">Un-Transferred</th>
-        <th rowspan="2" colspan="7"><a href="/legacy_import">Legacy Import</a></th>
+        <th colspan="3"></th>
+        <th>{%  if current_page == "un_transferred_legacy_mastercard" %}Un-Transferred MasterCard{%  else %}<a href="/un_transferred_legacy/master_card">Un-Transferred MasterCard</a> {% endif %}</th>
+
+{#        <th rowspan="2" colspan="7"><a href="/legacy_import">Legacy Import</a></th>#}
     </tr>
     <tr>
-        <th>{%  if current_page == "un_transferred_legacy_mastercard" %}MasterCard{%  else %}<a href="/un_transferred_legacy/master_card">MasterCard</a> {% endif %}</th>
-        <th colspan="2">{%  if current_page == "un_transferred_legacy_debitcard" %}Debit Card{%  else %}<a href="/un_transferred_legacy/debit_card">Debit Card</a> {% endif %}</th>
+{#        <th colspan="2">{%  if current_page == "un_transferred_legacy_debitcard" %}Debit Card{%  else %}<a href="/un_transferred_legacy/debit_card">Debit Card</a> {% endif %}</th>#}
     </tr>
 </table>
 <br><br>
