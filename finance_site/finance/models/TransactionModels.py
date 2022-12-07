@@ -33,7 +33,8 @@ class TransactionCategory(models.Model):
 
 class TransactionBase(models.Model):
     month = models.DateField(
-
+        null=True,
+        default=None
     )
 
     @property
@@ -157,13 +158,14 @@ class TransactionBase(models.Model):
         else:
             raise Exception(f"Unknown payment method of {self.payment_method} detected")
         vancouver_timezone = pytz.timezone('America/Vancouver')
-        month_as_datetime_obj = datetime.datetime.strptime(f'{self.month.strftime("%Y-%m")}-01', "%Y-%m-%d").astimezone(
-            vancouver_timezone) \
-            if type(self.month) == datetime.datetime \
-            else datetime.datetime.strptime(f"{self.month}", "%Y-%m-%d").astimezone(vancouver_timezone)
-        self.month = datetime.datetime.strptime(
-            f'{month_as_datetime_obj.strftime("%Y-%m")}-01', "%Y-%m-%d"
-        ).astimezone(vancouver_timezone)
+        if self.month is not None:
+            month_as_datetime_obj = datetime.datetime.strptime(f'{self.month.strftime("%Y-%m")}-01', "%Y-%m-%d").astimezone(
+                vancouver_timezone) \
+                if type(self.month) == datetime.datetime \
+                else datetime.datetime.strptime(f"{self.month}", "%Y-%m-%d").astimezone(vancouver_timezone)
+            self.month = datetime.datetime.strptime(
+                f'{month_as_datetime_obj.strftime("%Y-%m")}-01', "%Y-%m-%d"
+            ).astimezone(vancouver_timezone)
 
         super(TransactionBase, self).save(*args, **kwargs)
 

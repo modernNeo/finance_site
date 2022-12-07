@@ -4,6 +4,7 @@ import datetime
 import pytz
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 
@@ -37,7 +38,6 @@ class UploadDebitCardTransaction(View):
                         pass
                     if date is not None:
                         FinalizedTransaction(
-                            month=date,
                             date=date,
                             payment_method="Debit Card",
                             method_of_transaction=line[1],
@@ -46,3 +46,4 @@ class UploadDebitCardTransaction(View):
                             price=line[4]
                         ).save()
             fs.delete(file_name)
+        return HttpResponseRedirect("")
