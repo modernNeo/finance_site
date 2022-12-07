@@ -37,9 +37,11 @@ class UpdateFinalizedItem(View):
             item.save()
             return HttpResponseRedirect(item.get_update_link)
         elif request.POST['action'] == "delete_item":
-            is_finalized_item = hasattr(FinalizedItem.objects.get(id=item_id), "finalized_transaction")
+            finalized_item = FinalizedItem.objects.get(id=item_id)
+            is_finalized_item = hasattr(finalized_item, "finalized_transaction")
             if is_finalized_item:
-                payment_method = FinalizedItem.objects.get(id=item_id).finalized_transaction.payment_method
+                payment_method = finalized_item.finalized_transaction.payment_method
+                finalized_item.delete()
                 if payment_method == "Debit Card":
                     return HttpResponseRedirect("/debit_card/all")
                 else:
