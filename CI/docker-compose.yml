@@ -9,8 +9,6 @@ services:  #Services that are needed for the finance_site app
             - POSTGRES_USER
             - POSTGRES_PASSWORD
             - COMPOSE_PROJECT_NAME
-        ports:
-            - 8000:8000
         volumes: #volume are for hot reload
             - logs:/src/app/logs
             - receipt_images:/src/app/receipt_images
