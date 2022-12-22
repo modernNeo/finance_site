@@ -1,0 +1,80 @@
+{%  include 'header.html' %}
+<div class="tabs" id="tabs">
+    <ul>
+        {%  for month in months %}
+            {%  if month == current_month %}
+                <li data-tab="{{month}}" class="is-active"><a>{{month}}</a></li>
+            {%  else %}
+                <li data-tab="{{month}}"><a>{{month}}</a></li>
+            {%  endif %}
+        {%  endfor %}
+    </ul>
+</div>
+
+<div id="tab-content">
+    {%  for month, transactions in categorized_transactions.items %}
+        {% if month == current_month %}<div data-content="{{month}}">{% else %}<div class="is-hidden" data-content="{{month}}">{% endif %}
+        <br><br>
+        <table style="text-align: left">
+            <tr>
+                <th>ID</th>
+                <th colspan="2">Month</th>
+                <th>Date</th>
+                <th>Payment Method</th>
+                <th>Who Will Pay</th>
+                <th>Purchase Target</th>
+                <th>Method of Transaction</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Memo</th>
+                <th>Price</th>
+                <th>Store</th>
+                <th>Receipts</th>
+                <th>Category</th>
+                <th>Note</th>
+            </tr>
+            {%  for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.id }}</td>
+                    {%  if transaction.pre_pend is None %}
+                        <td colspan="2">{{ transaction.get_month }}</td>
+                    {%  else %}
+                        <td>{{ transaction.pre_pend }}</td>
+                        <td>{{ transaction.get_month }}</td>
+                    {%  endif %}
+                    <td><a target="_blank" href="{{ transaction.get_update_link }}">{{ transaction.get_date }}</a></td>
+                    <td>{{ transaction.payment_method }}</td>
+                    <td>{{ transaction.who_will_pay }}</td>
+                    <td>{{ transaction.purchase_target }}</td>
+                    <td>{{ transaction.method_of_transaction }}</td>
+                    <td>{{ transaction.type }}</td>
+                    <td>{{ transaction.name }}</td>
+                    <td>{{ transaction.memo }}</td>
+                    <td>{{ transaction.formatted_price }}</td>
+                    <td>{{ transaction.store }}</td>
+                    <td>{{ transaction.receipt }}</td>
+                    <td>{{ transaction.category }}</td>
+                    <td>{{ transaction.note }}</td>
+                </tr>
+            {%  endfor %}
+        </table>
+    </div>
+    {% endfor %}
+</div>
+<script>
+//changes date tab
+$(document).ready(function() {
+    $('#tabs li').on('click', function() {
+        var tab = $(this).data('tab');
+
+        $('#tabs li').removeClass('is-active');
+        $(this).addClass('is-active');
+
+        console.log(tab);
+
+        $('#tab-content div[data-content]').addClass('is-hidden');
+        $('div[data-content="' + tab + '"]').removeClass('is-hidden');
+    });
+});
+</script>
+</body>

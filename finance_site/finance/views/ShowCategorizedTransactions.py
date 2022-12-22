@@ -109,7 +109,7 @@ class ShowCategorizedTransactions(View):
                         row += 1
 
         return render(
-            request, 'index.html', context=
+            request, 'show_categorized_transactions.html', context=
             {
                 "categorized_transactions": categorized_transactions,
                 "category_totals": final_category_totals,
