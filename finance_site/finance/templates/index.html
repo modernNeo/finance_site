@@ -36,18 +36,20 @@
             {%  endfor %}
         </ul>
         <table>
-        {%  for category_month, pages in category_totals.items %}
+        {%  for category_month, table_entries in category_totals.items %}
             {%  if category_month == month %}
-                {%  for page in pages %}
+                {%  for rows in table_entries %}
                     <tr>
-                        {%  for category, price in page.items %}
-                            <td>{{ category }}: {{ price }}</td>
-                        {%  endfor %}
+                    {%  for row in rows %}
+                            {%  for category, price in row.items %}
+                                <td>{{ category }}: {{ price }}</td>
+                            {%  endfor %}
+                    {% endfor %}
                     </tr>
                 {%  endfor %}
             {%  endif %}
         {%  endfor %}
-        </table>
+        </table><br><br>
         <table style="text-align: left">
             <tr>
                 <th>ID</th>
