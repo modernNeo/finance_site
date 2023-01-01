@@ -20,6 +20,7 @@ pipeline {
                         export POSTGRES_USER="'"${FINANCE_SITE_POSTGRES_USER}"'";
                         export POSTGRES_PASSWORD="'"${FINANCE_SITE_POSTGRES_PASSWORD}"'";
                         export JENKINS="true";
+                        export ENV="PROD";
                         ./CI/deploy.sh;
                     \'"""
                 }
