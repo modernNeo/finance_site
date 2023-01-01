@@ -10,7 +10,6 @@ export COMPOSE_PROJECT_NAME="finance_site"
 export prod_container_name="${COMPOSE_PROJECT_NAME}_app"
 export prod_container_db_name="${COMPOSE_PROJECT_NAME}_db"
 export docker_compose_file="CI/docker-compose.yml"
-export compose_project_name=$(echo "$COMPOSE_PROJECT_NAME" | awk '{print tolower($0)}')
 export prod_image_name_lower_case=$(echo "$prod_container_name" | awk '{print tolower($0)}')
 
 docker rm -f ${prod_container_name} || true
