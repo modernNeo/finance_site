@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from finance.url_paths import update_finalized_transaction, update_finalized_item, update_pending_transaction, \
@@ -49,118 +50,118 @@ from finance.views.UploadDebitCardTransaction import UploadDebitCardTransaction
 from finance.views.UploadMasterCardTransaction import UploadMasterCardTransaction
 
 urlpatterns = [
-                  path('', ShowCategorizedTransactions.as_view(), name="index"),
-                  path('master_card_payment_breakdown', ShowMasterCardPaymentBreakdown.as_view(),
+                  path('', login_required(ShowCategorizedTransactions.as_view()), name="index"),
+                  path('master_card_payment_breakdown', login_required(ShowMasterCardPaymentBreakdown.as_view()),
                        name="payment_breakdown"),
-                  path(f'{update_finalized_transaction}<int:transaction_id>', UpdateTransaction.as_view(),
+                  path(f'{update_finalized_transaction}<int:transaction_id>', login_required(UpdateTransaction.as_view()),
                        name="update_finalized_transaction"),
-                  path("item/finalized/new", NewFinalizedItem.as_view(), name="new_finalized_item"),
-                  path(f'{update_finalized_item}<int:item_id>', UpdateFinalizedItem.as_view(), name="update_finalized_item"),
-                  path('transaction/pending/new', NewPendingTransaction.as_view(), name="new_pending_transaction"),
-                  path('item/pending/new', NewPendingItem.as_view(), name="new_pending_item"),
-                  path('pending_transactions', ListPendingTransactions.as_view(), name="list_pending_transactions"),
-                  path(f'{update_pending_transaction}<int:pending_transaction_id>', UpdatePendingTransaction.as_view(),
+                  path("item/finalized/new", login_required(NewFinalizedItem.as_view()), name="new_finalized_item"),
+                  path(f'{update_finalized_item}<int:item_id>', login_required(UpdateFinalizedItem.as_view()), name="update_finalized_item"),
+                  path('transaction/pending/new', login_required(NewPendingTransaction.as_view()), name="new_pending_transaction"),
+                  path('item/pending/new', login_required(NewPendingItem.as_view()), name="new_pending_item"),
+                  path('pending_transactions', login_required(ListPendingTransactions.as_view()), name="list_pending_transactions"),
+                  path(f'{update_pending_transaction}<int:pending_transaction_id>', login_required(UpdatePendingTransaction.as_view()),
                        name="update_pending_transaction"),
-                  path(f'{update_pending_item}<int:pending_item_id>', UpdatePendingItem.as_view(),
+                  path(f'{update_pending_item}<int:pending_item_id>', login_required(UpdatePendingItem.as_view()),
                        name="update_pending_item"),
-                  path('category/add', AddCategory.as_view(), name="add_category"),
-                  path(f"{update_category}<int:category_id>", UpdateCategory.as_view(), name="update_category"),
-                  path("categories", ListCategories.as_view(), name="list_categories"),
-                  path('mappings', Mappings.as_view(), name="mappings"),
+                  path('category/add', login_required(AddCategory.as_view()), name="add_category"),
+                  path(f"{update_category}<int:category_id>", login_required(UpdateCategory.as_view()), name="update_category"),
+                  path("categories", login_required(ListCategories.as_view()), name="list_categories"),
+                  path('mappings', login_required(Mappings.as_view()), name="mappings"),
                   path(
                       'mapping/refund/transaction/new',
-                      NewTransactionRefundMapping.as_view(),
+                      login_required(NewTransactionRefundMapping.as_view()),
                       name="new_transaction_refund_mapping"
                   ),
                   path(
                       'mapping/reimbursement/transaction/new',
-                      NewTransactionReimbursementMapping.as_view(),
+                      login_required(NewTransactionReimbursementMapping.as_view()),
                       name="new_transaction_reimbursement_mapping"
                   ),
                   path(
                       'mapping/repaid/transaction/new',
-                      NewTransactionRepaidMapping.as_view(),
+                      login_required(NewTransactionRepaidMapping.as_view()),
                       name="new_transaction_repaid_mapping"),
                   #
 
-                  path('mapping/refund/item/new', NewItemRefundMapping.as_view(), name="new_item_refund_mapping"),
+                  path('mapping/refund/item/new', login_required(NewItemRefundMapping.as_view()), name="new_item_refund_mapping"),
                   path(
                       'mapping/reimbursement/item/new',
-                      NewItemReimbursementMapping.as_view(),
+                      login_required(NewItemReimbursementMapping.as_view()),
                       name="new_item_reimbursement_mapping"
                   ),
-                  path('mapping/repaid/item/new', NewItemRepaidMapping.as_view(), name="new_item_refund_mapping"),
+                  path('mapping/repaid/item/new', login_required(NewItemRepaidMapping.as_view()), name="new_item_refund_mapping"),
                   path(
                       'mapping/e_transfer_internal_transfer_mapping/new',
-                      NewETransferInternalTransferMapping.as_view(),
+                      login_required(NewETransferInternalTransferMapping.as_view()),
                       name="new_e_transfer_internal_transfer_mapping"
                   ),
                   path(
                       f'{update_transaction_refunding_mapping}<int:mapping_id>',
-                      UpdateTransactionRefundMapping.as_view(),
+                      login_required(UpdateTransactionRefundMapping.as_view()),
                       name="update_transaction_refund_mapping"
                   ),
                   path(
                       f'{update_transaction_reimbursement_mapping}<int:mapping_id>',
-                      UpdateTransactionReimbursementMapping.as_view(),
+                      login_required(UpdateTransactionReimbursementMapping.as_view()),
                       name="update_transaction_reimbursement_mapping"
                   ),
                   path(
                       f'{update_transaction_repaid_mapping}<int:mapping_id>',
-                      UpdateTransactionRepaidMapping.as_view(),
+                      login_required(UpdateTransactionRepaidMapping.as_view()),
                       name="update_transaction_repaid_mapping"
                   ),
                   #
                   path(
                       f'{update_item_refund_mapping}<int:mapping_id>',
-                      UpdateItemRefundMapping.as_view(),
+                      login_required(UpdateItemRefundMapping.as_view()),
                       name="update_item_refund_mapping"
                   ),
                   path(
                       f'{update_item_reimbursement_mapping}<int:mapping_id>',
-                      UpdateItemReimbursementMapping.as_view(),
+                      login_required(UpdateItemReimbursementMapping.as_view()),
                       name="update_item_reimbursement_mapping"
                   ),
                   path(
                       f'{update_item_repaid_mapping}<int:mapping_id>',
-                      UpdateItemRepaidMapping.as_view(),
+                      login_required(UpdateItemRepaidMapping.as_view()),
                       name="update_item_repaid_mapping"
                   ),
                   #
                   path(
                       f'{update_e_transfer_internal_transfer_mapping}<int:mapping_id>',
-                      UpdateETransferInternalTransferMapping.as_view(),
+                      login_required(UpdateETransferInternalTransferMapping.as_view()),
                       name="update_e_transfer_internal_transfer_mapping"
                   ),
-                  path('awaiting_payment', ShowItemsAwaitingRepayment.as_view(), name='items_awaiting_repayment'),
-                  path('legacy_import', ImportFromLegacySystem.as_view(), name="import_legacy"),
-                  path('master_card/all', ShowAllMasterCardTransactions.as_view(), name="all_master_card"),
-                  path('debit_card/all', ShowAllDebitCardTransactions.as_view(), name="all_debit_card"),
-                  path('master_card/categorized', ShowCategorizedMasterCardTransactions.as_view(),
+                  path('awaiting_payment', login_required(ShowItemsAwaitingRepayment.as_view()), name='items_awaiting_repayment'),
+                  path('legacy_import', login_required(ImportFromLegacySystem.as_view()), name="import_legacy"),
+                  path('master_card/all', login_required(ShowAllMasterCardTransactions.as_view()), name="all_master_card"),
+                  path('debit_card/all', login_required(ShowAllDebitCardTransactions.as_view()), name="all_debit_card"),
+                  path('master_card/categorized', login_required(ShowCategorizedMasterCardTransactions.as_view()),
                        name="categorized_master_card"),
-                  path('debit_card/categorized', ShowCategorizedDebitCardTransactions.as_view(),
+                  path('debit_card/categorized', login_required(ShowCategorizedDebitCardTransactions.as_view()),
                        name="categorized_debit_card"),
                   path(
                       'master_card/uncategorized',
-                      ShowUncategorizedMasterCardTransactions.as_view(),
+                      login_required(ShowUncategorizedMasterCardTransactions.as_view()),
                       name="uncategorized_mastercard"
                   ),
                   path(
                       'debit_card/uncategorized',
-                      ShowUncategorizedDebitCardTransactions.as_view(),
+                      login_required(ShowUncategorizedDebitCardTransactions.as_view()),
                       name="uncategorized_debitcard"
                   ),
                   path(
                       'un_transferred_legacy/master_card',
-                      ShowUnTransferredLegacyMasterCardTransactions.as_view(),
+                      login_required(ShowUnTransferredLegacyMasterCardTransactions.as_view()),
                       name="un_transferred_legacy_mastercard"
                   ),
                   path(
                       'un_transferred_legacy/debit_card',
-                      ShowUnTransferredLegacyDebitCardTransactions.as_view(),
+                      login_required(ShowUnTransferredLegacyDebitCardTransactions.as_view()),
                       name="un_transferred_legacy_debitcard"
                   ),
                   # path('transaction/add', add_transaction_view, name="add_transaction"),
-                  path('csv/upload/master_card', UploadMasterCardTransaction.as_view(), name="upload_master_card_csv"),
-                  path('csv/upload/debit_card', UploadDebitCardTransaction.as_view(), name="upload_debit_card_csv")
+                  path('csv/upload/master_card', login_required(UploadMasterCardTransaction.as_view()), name="upload_master_card_csv"),
+                  path('csv/upload/debit_card', login_required(UploadDebitCardTransaction.as_view()), name="upload_debit_card_csv")
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
