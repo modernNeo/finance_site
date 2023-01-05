@@ -11,7 +11,7 @@ table, th, td {
 <body>
 <table style="width: 100%">
     <tr>
-        <th rowspan="2">{%  if current_page == "categorized" %}Combined Categorized{%  else %}<a href="/">Combined Categorized</a> {% endif %}</th>
+        <th>{%  if current_page == "payment_breakdown" %}MasterCard Payment Breakdown{%  else %}<a href="/master_card_payment_breakdown">MasterCard Payment Breakdown</a> {% endif %}</th>
         <th colspan="2">Categorized Finalized Transactions</th>
 
         <th colspan="2">Uncategorized Finalized Transactions</th>
@@ -36,7 +36,7 @@ table, th, td {
     </tr>
     <tr><td style="background-color: black" colspan="9">-</td></tr>
     <tr>
-        <th>{%  if current_page == "payment_breakdown" %}MasterCard Payment Breakdown{%  else %}<a href="/master_card_payment_breakdown">MasterCard Payment Breakdown</a> {% endif %}</th>
+        <th rowspan="2">{%  if current_page == "categorized" %}Combined Categorized{%  else %}<a href="/">Combined Categorized</a> {% endif %}</th>
         <th>{%  if current_page == "mappings" %}Mappings{%  else %}<a href="/mappings">Mappings</a> {% endif %}</th>
         <th>{%  if current_page == "not_reimbursed" %}Awaiting Repayments{%  else %}<a href="/awaiting_payment">Awaiting Repayments</a> {% endif %}</th>
         <th colspan="7">{%  if current_page == "data_is_beautiful" %}r/DataIsBeautiful{%  else %}<a href="/r/data_is_beautiful">r/DataIsBeautiful</a> {% endif %}</th>
