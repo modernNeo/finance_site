@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 
-from finance.models.TransactionModels import FinalizedTransaction, TransactionBase, TransactionCategory
+from finance.models.TransactionModels import FinalizedTransaction, TransactionBase, TransactionCategory, Receipt
 
 
 class UpdateTransaction(View):
@@ -50,14 +50,15 @@ class UpdateTransaction(View):
         finalized_transaction.purchase_target = request.POST['purchase_target']
         finalized_transaction.who_will_pay = request.POST['who_will_pay']
         finalized_transaction.store = request.POST['store']
-        receipt = request.FILES.get("receipt", None)
-        if receipt is not None:
+        if request.FILES.get("receipt", None) is not None:
             fs = FileSystemStorage()
-            new_receipt_name = fs.save(receipt.name, receipt)
-            old_receipt_name = finalized_transaction.receipt.name
-            if old_receipt_name != "" and (new_receipt_name != old_receipt_name):
-                fs.delete(old_receipt_name)
-            finalized_transaction.receipt = new_receipt_name
+            current_receipts = finalized_transaction.receipts.all()
+            for current_receipt in current_receipts:
+                fs.delete(current_receipt.receipt.name)
+                current_receipt.delete()
+            for receipt in (dict(request.FILES))['receipt']:
+                new_receipt_name = fs.save(f"{finalized_transaction.date}-{receipt.name}", receipt)
+                Receipt(receipt=new_receipt_name, transaction=finalized_transaction).save()
         finalized_transaction.note = request.POST['note']
         finalized_transaction.category = TransactionCategory.objects.get(id=request.POST['category'])
         finalized_transaction.save()

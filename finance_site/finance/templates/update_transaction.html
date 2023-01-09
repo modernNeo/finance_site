@@ -44,8 +44,12 @@
     <br><br><b>Price: </b>{{ transaction.formatted_price }}
     <br><br><b>Store: </b><input type="text" name="store" value="{{ transaction.store }}">
     <br><br><b>
-    Current Receipt: <a href="{%  get_media_prefix %}{{ transaction.receipt }}">{{ transaction.receipt }}</a><br>
-    New Receipt: <input type="file" name="receipt" value="{{ transaction.receipt }}">
+    Current Receipt[s]: <br>
+    {%  for receipt in transaction.receipts.all %}
+        <a href="{%  get_media_prefix %}{{ receipt.receipt }}">{{ receipt.receipt }}</a><br>
+    {%  endfor %}
+    [<a href="{%  get_media_prefix %}{{ transaction.receipt }}">{{ transaction.receipt }}</a>]<br>
+    New Receipt[s]: <input type="file" name="receipt" value="{{ transaction.receipt }}" multiple="multiple">
 </b>
     <br><br><b>Note: </b><input type="text" name="note" value="{{ transaction.note }}">
     <br><br><b>Processed: </b><input type="checkbox" name="processed" {%  if transaction.processed %} checked {%  endif %}> {{ transaction.processed }}
