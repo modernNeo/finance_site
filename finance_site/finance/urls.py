@@ -12,7 +12,6 @@ from finance.views.ImportFromLegacySystem import ImportFromLegacySystem
 from finance.views.ListCategories import ListCategories
 from finance.views.ListPendingTransactions import ListPendingTransactions
 from finance.views.Mappings import Mappings
-from finance.views.MigrateReceipts import MigrateReceipts
 from finance.views.NewETransferInternalTransferMapping import NewETransferInternalTransferMapping
 from finance.views.NewFinalizedItem import NewFinalizedItem
 from finance.views.NewItemRefundMapping import NewItemRefundMapping
@@ -159,9 +158,6 @@ urlpatterns = [
                       'un_transferred_legacy/debit_card',
                       login_required(ShowUnTransferredLegacyDebitCardTransactions.as_view()),
                       name="un_transferred_legacy_debitcard"
-                  ),
-                  path('migrate_receipts',
-                       login_required(MigrateReceipts.as_view()),
-                       name="migrate_receipts")
+                  )
                   # path('transaction/add', add_transaction_view, name="add_transaction"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

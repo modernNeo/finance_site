@@ -50,13 +50,13 @@ class UpdateTransaction(View):
         finalized_transaction.purchase_target = request.POST['purchase_target']
         finalized_transaction.who_will_pay = request.POST['who_will_pay']
         finalized_transaction.store = request.POST['store']
-        if request.FILES.get("receipt", None) is not None:
+        if request.FILES.get("receipts", None) is not None:
             fs = FileSystemStorage()
             current_receipts = finalized_transaction.receipts.all()
             for current_receipt in current_receipts:
                 fs.delete(current_receipt.receipt.name)
                 current_receipt.delete()
-            for receipt in (dict(request.FILES))['receipt']:
+            for receipt in (dict(request.FILES))['receipts']:
                 new_receipt_name = fs.save(f"{finalized_transaction.date}-{receipt.name}", receipt)
                 Receipt(receipt=new_receipt_name, transaction=finalized_transaction).save()
         finalized_transaction.note = request.POST['note']
