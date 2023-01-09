@@ -137,9 +137,6 @@ class TransactionBase(models.Model):
     store = models.CharField(
         max_length=300
     )
-    receipt = models.FileField(
-
-    )
     note = models.CharField(
         max_length=300
     )
