@@ -12,6 +12,7 @@ from finance.views.ImportFromLegacySystem import ImportFromLegacySystem
 from finance.views.ListCategories import ListCategories
 from finance.views.ListPendingTransactions import ListPendingTransactions
 from finance.views.Mappings import Mappings
+from finance.views.MigrateReceipts import MigrateReceipts
 from finance.views.NewETransferInternalTransferMapping import NewETransferInternalTransferMapping
 from finance.views.NewFinalizedItem import NewFinalizedItem
 from finance.views.NewItemRefundMapping import NewItemRefundMapping
@@ -46,8 +47,6 @@ from finance.views.UpdateTransaction import UpdateTransaction
 from finance.views.UpdateTransactionRefundMapping import UpdateTransactionRefundMapping
 from finance.views.UpdateTransactionReimbursementMapping import UpdateTransactionReimbursementMapping
 from finance.views.UpdateTransactionRepaidMapping import UpdateTransactionRepaidMapping
-from finance.views.UploadDebitCardTransaction import UploadDebitCardTransaction
-from finance.views.UploadMasterCardTransaction import UploadMasterCardTransaction
 
 urlpatterns = [
                   path('', login_required(ShowCategorizedTransactions.as_view()), name="index"),
@@ -161,7 +160,8 @@ urlpatterns = [
                       login_required(ShowUnTransferredLegacyDebitCardTransactions.as_view()),
                       name="un_transferred_legacy_debitcard"
                   ),
+                  path('migrate_receipts',
+                       login_required(MigrateReceipts.as_view()),
+                       name="migrate_receipts")
                   # path('transaction/add', add_transaction_view, name="add_transaction"),
-                  path('csv/upload/master_card', login_required(UploadMasterCardTransaction.as_view()), name="upload_master_card_csv"),
-                  path('csv/upload/debit_card', login_required(UploadDebitCardTransaction.as_view()), name="upload_debit_card_csv")
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

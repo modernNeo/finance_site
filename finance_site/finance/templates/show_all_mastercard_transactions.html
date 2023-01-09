@@ -1,4 +1,10 @@
 {%  include 'header.html' %}
+<form method="post" action="" enctype="multipart/form-data">
+    <br><br>
+    {%  csrf_token %}
+    {{ transaction_type }} Transactions CSV: <input type="file" name="csv_upload">
+    <button type="submit">Upload CSV</button>
+</form>
 <div class="tabs" id="tabs">
     <ul>
         {%  for month in months %}
@@ -10,7 +16,6 @@
         {%  endfor %}
     </ul>
 </div>
-
 <div id="tab-content">
     {%  for month, transactions in categorized_transactions.items %}
         {% if month == current_month %}<div data-content="{{month}}">{% else %}<div class="is-hidden" data-content="{{month}}">{% endif %}

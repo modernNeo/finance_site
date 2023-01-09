@@ -170,6 +170,14 @@ class TransactionBase(models.Model):
         super(TransactionBase, self).save(*args, **kwargs)
 
 
+class Receipt(models.Model):
+    receipt = models.FileField(
+    )
+    transaction = models.ForeignKey(
+        TransactionBase, on_delete=models.CASCADE,
+        related_name='receipts'
+    )
+
 class FinalizedTransaction(TransactionBase):
     category = models.ForeignKey(
         TransactionCategory, on_delete=models.CASCADE, null=True
